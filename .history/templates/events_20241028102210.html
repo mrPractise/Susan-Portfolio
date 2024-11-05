@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #4a90e2;
+            --gradient: linear-gradient(135deg, #4a90e2, #6c63ff);
+            --text: #333;
+            --light: #f5f7fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .events-hero {
+            height: 60vh;
+            background: var(--gradient);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .events-nav {
+            position: sticky;
+            top: 60px;
+            background: white;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .events-nav ul {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem;
+            list-style: none;
+        }
+
+        .events-nav a {
+            text-decoration: none;
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .events-nav a:hover,
+        .events-nav a.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .calendar-section {
+            padding: 4rem 2rem;
+            background: var(--light);
+        }
+
+        .calendar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-header button {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-header button:hover {
+            background: white;
+            color: var(--accent);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #eee;
+            padding: 1rem;
+        }
+
+        .calendar-day {
+            background: white;
+            aspect-ratio: 1;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-day:hover {
+            background: #f0f7ff;
+        }
+
+        .calendar-day.header {
+            font-weight: bold;
+            background: #f8f9fa;
+        }
+
+        .calendar-day.has-event {
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .event-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+        }
+
+        .upcoming-events {
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--text);
+        }
+
+        .event-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-image {
+            position: relative;
+            height: 100%;
+            min-height: 300px;
+        }
+
+        .event-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .event-date-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: bold;
+            color: var(--accent);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .event-details {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .event-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+            color: #666;
+        }
+
+        .event-meta i {
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .event-card {
+                grid-template-columns: 1fr;
+            }
+
+            .event-image {
+                height: 250px;
+            }
+
+            .events-nav ul {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .calendar-grid {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="events-hero">
+        <div class="container animate-fade-up">
+            <h1>Upcoming Events</h1>
+        </div>
+    </header>
+
+    <nav class="events-nav">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#calendar" class="active">Calendar</a></li>
+            <li><a href="#upcoming">Upcoming Events</a></li>
+        </ul>
+    </nav>
+
+    <section id="calendar" class="calendar-section">
+        <div class="calendar-container animate-fade-up">
+            <div class="calendar-header">
+                <button id="prevMonth">&lt; Previous</button>
+                <h2 id="currentMonth">October 2024</h2>
+                <button id="nextMonth">Next &gt;</button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Calendar will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <section id="upcoming" class="upcoming-events">
+        <h2 class="section-title">Upcoming Events</h2>
+        
+        <div class="event-card animate-fade-up">
+            <div class="event-image">
+                <img src="/api/placeholder/800/600" alt="Tech Conference">
+                <div class="event-date-badge">Oct 28</div>
+            </div>
+            <div class="event-details">
+                <h3>Tech Innovation Summit 2024</h3>
+                <div class="event-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Nairobi Convention Centre</span>
+                    <span><i class="fas fa-clock"></i> 9:00 AM - 5:00 PM</span>
+                </div>
+                <p>Join us for the biggest tech conference in East Africa, featuring industry leaders, innovative workshops, and networking opportunities.</p>
+                <button class="btn btn-primary" onclick="showMpesaModal()">Book Tickets</button>
+            </div>
+        </div>
+
+        <div class="event-card animate-fade-up">
+            <div class="event-image">
+                <img src="/api/placeholder/800/600" alt="Tech Workshop">
+                <div class="event-date-badge">Nov 15</div>
+            </div>
+            <div class="event-details">
+                <h3>AI & Machine Learning Workshop</h3>
+                <div class="event-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Tech Hub Nairobi</span>
+                    <span><i class="fas fa-clock"></i> 10:00 AM - 4:00 PM</span>
+                </div>
+                <p>An intensive hands-on workshop covering the latest developments in AI and machine learning. Perfect for developers and tech enthusiasts.</p>
+                <button class="btn btn-primary" onclick="showMpesaModal()">Book Tickets</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Calendar Generation
+        function generateCalendar() {
+            const calendar = document.getElementById('calendarGrid');
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            calendar.innerHTML = '';
+            
+            // Add day headers
+            days.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day header';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            });
+
+            // Get current date info
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Add blank days
+            for (let i = 0; i < firstDay; i++) {
+                const blankDay = document.createElement('div');
+                blankDay.className = 'calendar-day';
+                calendar.appendChild(blankDay);
+            }
+
+            // Add calendar days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = i;
+                
+                // Add event dots randomly
+                if (Math.random() > 0.7) {
+                    dayElement.classList.add('has-event');
+                    const dot = document.createElement('div');
+                    dot.className = 'event-dot';
+                    dayElement.appendChild(dot);
+                }
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.animate-fade-up').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Initialize Calendar
+        generateCalendar();
+
+        // Month Navigation
+        let currentDate = new Date();
+        
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateCalendar();
+        });
+
+        function updateCalendar() {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('currentMonth').textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            generateCalendar();
+        }
+    </script>
+</body>
+</html>

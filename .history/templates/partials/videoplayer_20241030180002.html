@@ -1,0 +1,30 @@
+<!-- videoplayer.html -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/videoplayer.css' %}" />
+<div class="custom-video-player" data-video-id="{{ project.id }}">
+ <!-- Update your video container in videoplayer.html -->
+<!-- Add this to your videoplayer.html -->
+<div class="video-container">
+    <div class="play-overlay">
+        <i class="fas fa-play"></i>
+    </div>
+    <video preload="metadata" 
+        {% if project.video_thumbnail %}
+            poster="{{ project.video_thumbnail.url }}"
+        {% endif %}
+        playsinline
+        crossorigin="anonymous">
+        <source src="{{ project.video.url }}" type="video/mp4">
+        <source src="{{ project.video.url|slice:':-4' }}.webm" type="video/webm">
+        Your browser doesn't support video playback.
+    </video>
+</div>
+
+<!-- Add video modal -->
+<div class="video-modal">
+    <div class="modal-content">
+        <button class="close-modal">&times;</button>
+        <div class="modal-video-container"></div>
+    </div>
+</div>
+<script src="{% static 'javascript/videoplayer.js' %}"></script>

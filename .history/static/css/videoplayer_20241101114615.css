@@ -1,0 +1,203 @@
+.custom-video-player {
+    position: relative;
+    width: 100%;
+    background: #000;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.video-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    opacity: 1; /* Changed from 0 to 1 to always show controls */
+}
+
+/* Remove hover effect */
+/* .video-container:hover .video-controls {
+    opacity: 1;
+} */
+
+.video-controls button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px; /* Increased padding for better clickability */
+    transition: opacity 0.3s ease;
+    font-size: 16px; /* Ensure icon is visible */
+}
+
+/* Make play button more prominent */
+.video-controls .play-pause {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-controls .play-pause:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.video-controls button:hover {
+    opacity: 0.8;
+}
+
+.progress-bar {
+    flex-grow: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+.progress-bar-filled {
+    height: 100%;
+    background: #fff;
+    border-radius: 2px;
+    width: 0;
+    transition: width 0.1s linear;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.volume-slider {
+    width: 80px;
+    height: 4px;
+}
+
+.time {
+    color: white;
+    font-size: 14px;
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Modal styles remain the same */
+.video-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.video-modal.active {
+    opacity: 1;
+}
+
+.video-modal .modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    background: #000;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.video-modal .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.modal-video-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+}
+
+.modal-video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Error state */
+.video-error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+}
+
+.video-error i {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .video-controls {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .volume-control {
+        display: none;
+    }
+
+    .time {
+        min-width: 70px;
+        font-size: 12px;
+    }
+
+    .video-controls .play-pause {
+        width: 32px; /* Slightly smaller on mobile */
+        height: 32px;
+    }
+}

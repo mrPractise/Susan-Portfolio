@@ -1,0 +1,28 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'css/contact-email.css' %}">
+
+</head>
+<body>
+    <div class="message-header">
+        <h2>New Contact Form Message</h2>
+        <p>You have received a new message from your website's contact form.</p>
+    </div>
+
+    <div class="message-content">
+        <p><span class="label">From:</span> {{ name }}</p>
+        <p><span class="label">Email:</span> {{ email }}</p>
+        <p><span class="label">Service:</span> {{ service }}</p>
+        
+        <p><span class="label">Message:</span></p>
+        <div style="white-space: pre-wrap;">{{ message }}</div>
+    </div>
+
+    <div class="message-footer">
+        <p>This email was sent from your website's contact form.</p>
+    </div>
+</body>
+</html>

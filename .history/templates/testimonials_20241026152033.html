@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testimonials - Susan Abong'o</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/testimonials.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  
+</head>
+<body>
+
+
+    <header class="testimonials-hero">
+        <div class="container animate-fade-up">
+            <h1>Client Testimonials</h1>
+            <p>What people say about working with me</p>
+        </div>
+    </header>
+
+
+    <div class="testimonials-grid">
+        <!-- Highlight Testimonial -->
+        <div class="testimonial-card highlight-testimonial animate-fade-up" data-type="events">
+            <div class="client-info">
+                <div class="client-image">
+                    <img src="{% static 'images/susan.jpg' %}" alt="Client Name">
+                </div>
+                <div>
+                    <h3>John Doe</h3>
+                    <p>Event Director, Creative Summit 2024</p>
+                </div>
+            </div>
+            <div class="testimonial-content">
+                <div class="star-rating">★★★★★</div>
+                <p>"Susan brought incredible energy to our tech conference. Her ability to engage the audience and manage complex panel discussions was outstanding."</p>
+                <span class="testimonial-date">March 2024</span>
+                <span class="testimonial-type">Event Hosting</span>
+            </div>
+        </div>
+
+        <!-- Regular Testimonials -->
+        <div class="testimonial-card animate-fade-up" data-type="art">
+            <div class="client-info">
+                <div class="client-image">
+                    <img src="{% static 'images/susan.jpg' %}" alt="Client Name">
+                </div>
+                <div>
+                    <h3>Jane Smith</h3>
+                    <p>Art Director</p>
+                </div>
+            </div>
+            <div class="testimonial-content">
+                <div class="star-rating">★★★★★</div>
+                <p>"The 3D character designs Susan created exceeded our expectations. Her attention to detail is remarkable."</p>
+                <span class="testimonial-date">February 2024</span>
+                <span class="testimonial-type">Art Project</span>
+            </div>
+        </div>
+
+        <!-- Add more testimonial cards with different data-type attributes -->
+    </div>
+
+    <section class="testimonial-stats">
+        <div class="stat-item animate-fade-up">
+            <div class="stat-number" data-count="150">10</div>
+            <p>Satisfied Clients</p>
+        </div>
+        <div class="stat-item animate-fade-up">
+            <div class="stat-number" data-count="45">10</div>
+            <p>Events Hosted</p>
+        </div>
+        <div class="stat-item animate-fade-up">
+            <div class="stat-number" data-count="200">50</div>
+            <p>Art Projects</p>
+        </div>
+        <div class="stat-item animate-fade-up">
+            <div class="stat-number" data-count="98">50</div>
+            <p>5-Star Reviews</p>
+        </div>
+    </section>
+
+    <script>
+        // Filtering
+        const filterTags = document.querySelectorAll('.filter-tag');
+        const testimonials = document.querySelectorAll('.testimonial-card');
+
+        filterTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                // Update active state
+                filterTags.forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+
+                // Filter testimonials
+                const filter = tag.dataset.filter;
+                testimonials.forEach(testimonial => {
+                    if (filter === 'all' || testimonial.dataset.type === filter) {
+                        testimonial.style.display = 'block';
+                    } else {
+                        testimonial.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Number animation
+        const animateNumbers = () => {
+            document.querySelectorAll('.stat-number').forEach(stat => {
+                const target = parseInt(stat.dataset.count);
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+
+                const updateNumber = () => {
+                    current += step;
+                    if (current < target) {
+                        stat.textContent = Math.floor(current);
+                        requestAnimationFrame(updateNumber);
+                    } else {
+                        stat.textContent = target;
+                    }
+                };
+
+                updateNumber();
+            });
+        };
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    
+                    // Animate numbers if it's a stat item
+                    if (entry.target.classList.contains('stat-item')) {
+                        animateNumbers();
+                    }
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.animate-fade-up').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

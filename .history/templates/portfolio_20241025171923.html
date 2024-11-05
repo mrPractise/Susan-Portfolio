@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Susan Abong'o</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/portfolio.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <header class="portfolio-header">
+        <div class="header-content animate-fade-up">
+            <h1>Portfolio</h1>
+            <p>A collection of my creative works</p>
+        </div>
+    </header>
+
+    <div class="portfolio-filters">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="2d">2D Art</button>
+            <button class="filter-btn" data-filter="3d">3D Art</button>
+            <button class="filter-btn" data-filter="character">Character Design</button>
+            <button class="filter-btn" data-filter="concept">Concept Art</button>
+        </div>
+    </div>
+
+    <div class="portfolio-grid">
+        <!-- Example portfolio items -->
+        <div class="portfolio-item animate-fade-up" data-category="2d">
+            <img src="{% static 'images/susan.jpg' %}" alt="Digital Painting">
+            <div class="portfolio-overlay">
+                <h3>Fantasy Landscape</h3>
+                <p>Digital Painting, 2024</p>
+                <div class="portfolio-tags">
+                    <span class="tag">2D</span>
+                    <span class="tag">Digital</span>
+                </div>
+            </div>
+        </div>
+        <!-- Add more portfolio items following the same structure -->
+    </div>
+
+    <div class="lightbox">
+        <button class="lightbox-close">&times;</button>
+        <div class="lightbox-content">
+            <img src="{% static 'images/susan.jpg' %}" alt="Lightbox Image">
+        </div>
+    </div>
+
+    <script>
+        // Portfolio filtering
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+                
+                portfolioItems.forEach(item => {
+                    if (filter === 'all' || item.dataset.category === filter) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Lightbox functionality
+        const lightbox = document.querySelector('.lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+        const lightboxClose = lightbox.querySelector('.lightbox-close');
+
+        portfolioItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const imgSrc = item.querySelector('img').src;
+                lightboxImg.src = imgSrc;
+                lightbox.classList.add('active');
+            });
+        });
+
+        lightboxClose.addEventListener('click', () => {
+            lightbox.classList.remove('active');
+        });
+
+        // Close lightbox when clicking outside the image
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+            }
+        });
+
+        // Animation observer (same as index.html)
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: "0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-fade-up').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

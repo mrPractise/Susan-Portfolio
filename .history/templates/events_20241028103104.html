@@ -1,0 +1,257 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="{% static 'css/global.css' %}">
+      <link rel="stylesheet" href="{% static 'css/events.css' %}">
+</head>
+<body>
+    <header class="events-hero">
+        <div class="container animate-fade-up">
+            <h1>Upcoming Events</h1>
+        </div>
+    </header>
+
+    <nav class="events-nav">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#calendar" class="active">Calendar</a></li>
+            <li><a href="#upcoming">Upcoming Events</a></li>
+        </ul>
+    </nav>
+
+   <div class="share-overlay" id="shareOverlay"></div>
+
+    <section id="calendar" class="calendar-section">
+        <div class="calendar-container animate-fade-up">
+            <div class="calendar-header">
+                <button id="prevMonth">&lt; Previous</button>
+                <h2 id="currentMonth">October 2024</h2>
+                <button id="nextMonth">Next &gt;</button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Calendar will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+  
+
+       <section id="upcoming" class="upcoming-events">
+        <h2 class="section-title">Upcoming Events</h2>
+        
+        <div class="event-card animate-fade-up">
+            <div class="event-image">
+                <img src="/api/placeholder/800/600" alt="Tech Conference">
+                <div class="event-date-badge">Oct 28</div>
+                <div class="share-button" onclick="toggleShareMenu(this)">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <div class="share-menu">
+                    <a href="#" class="share-menu-item" onclick="shareToWhatsApp('Tech Innovation Summit 2024', 'Join us for the biggest tech conference in East Africa')">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="#" class="share-menu-item" onclick="shareToFacebook('Tech Innovation Summit 2024', 'Join us for the biggest tech conference in East Africa')">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a>
+                    <a href="#" class="share-menu-item" onclick="shareToTwitter('Tech Innovation Summit 2024', 'Join us for the biggest tech conference in East Africa')">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="#" class="share-menu-item" onclick="shareToLinkedIn('Tech Innovation Summit 2024', 'Join us for the biggest tech conference in East Africa')">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="#" class="share-menu-item" onclick="shareViaEmail('Tech Innovation Summit 2024', 'Join us for the biggest tech conference in East Africa')">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                </div>
+            </div>
+            <div class="event-details">
+                <!-- Previous event details content -->
+            </div>
+        </div>
+
+        <div class="event-card animate-fade-up">
+            <div class="event-image">
+                <img src="/api/placeholder/800/600" alt="AI Workshop">
+                <div class="event-date-badge">Nov 15</div>
+                <div class="share-button" onclick="toggleShareMenu(this)">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+                <div class="share-menu">
+                    <a href="#" class="share-menu-item" onclick="shareToWhatsApp('AI & Machine Learning Workshop', 'An intensive hands-on workshop covering the latest developments in AI')">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="#" class="share-menu-item" onclick="shareToFacebook('AI & Machine Learning Workshop', 'An intensive hands-on workshop covering the latest developments in AI')">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a>
+                    <a href="#" class="share-menu-item" onclick="shareToTwitter('AI & Machine Learning Workshop', 'An intensive hands-on workshop covering the latest developments in AI')">
+                        <i class="fab fa-twitter"></i> Twitter
+                    </a>
+                    <a href="#" class="share-menu-item" onclick="shareToLinkedIn('AI & Machine Learning Workshop', 'An intensive hands-on workshop covering the latest developments in AI')">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="#" class="share-menu-item" onclick="shareViaEmail('AI & Machine Learning Workshop', 'An intensive hands-on workshop covering the latest developments in AI')">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                </div>
+            </div>
+            <div class="event-details">
+                <!-- Previous event details content -->
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+        // Calendar Generation
+        function generateCalendar() {
+            const calendar = document.getElementById('calendarGrid');
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            calendar.innerHTML = '';
+            
+            // Add day headers
+            days.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day header';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            });
+
+            // Get current date info
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Add blank days
+            for (let i = 0; i < firstDay; i++) {
+                const blankDay = document.createElement('div');
+                blankDay.className = 'calendar-day';
+                calendar.appendChild(blankDay);
+            }
+
+            // Add calendar days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = i;
+                
+                // Add event dots randomly
+                if (Math.random() > 0.7) {
+                    dayElement.classList.add('has-event');
+                    const dot = document.createElement('div');
+                    dot.className = 'event-dot';
+                    dayElement.appendChild(dot);
+                }
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.animate-fade-up').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Initialize Calendar
+        generateCalendar();
+
+        // Month Navigation
+        let currentDate = new Date();
+        
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateCalendar();
+        });
+
+        function updateCalendar() {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('currentMonth').textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            generateCalendar();
+        }
+
+
+               // Add new sharing functionality
+        function toggleShareMenu(button) {
+            const menu = button.nextElementSibling;
+            const overlay = document.getElementById('shareOverlay');
+            
+            // Close any open share menus
+            document.querySelectorAll('.share-menu.active').forEach(m => {
+                if (m !== menu) m.classList.remove('active');
+            });
+
+            menu.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Close share menu when clicking outside
+        document.getElementById('shareOverlay').addEventListener('click', () => {
+            document.querySelectorAll('.share-menu.active').forEach(menu => {
+                menu.classList.remove('active');
+            });
+            document.getElementById('shareOverlay').classList.remove('active');
+        });
+
+        // Sharing functions
+        function shareToWhatsApp(title, description) {
+            const text = `${title}\n${description}\n${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareToFacebook(title, description) {
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank');
+        }
+
+        function shareToTwitter(title, description) {
+            const text = `${title}\n${description}`;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank');
+        }
+
+        function shareToLinkedIn(title, description) {
+            const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
+            window.open(url, '_blank');
+        }
+
+        function shareViaEmail(title, description) {
+            const subject = encodeURIComponent(title);
+            const body = encodeURIComponent(`${description}\n\nMore info: ${window.location.href}`);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        }
+    </script>
+</body>
+</html>

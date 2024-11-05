@@ -1,0 +1,34 @@
+{% load project_tags %} 
+
+
+<!-- project_grid.html -->
+{% for project in projects %}
+    <div class="gallery-item" data-category="{{ project.category.slug }}" data-project-id="{{ project.id }}">
+        <div class="item-inner">
+
+           <div class="media-container" style="{% if project.video %}background-image: url('{{ project.video_thumbnail.url }}');{% else %}background-image: url('{{ project.image.url }}');{% endif %}">
+    {% if project.video %}
+        {% video_player project %}
+    {% else %}
+        <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy" />
+    {% endif %}
+</div>           
+            <div class="item-overlay">
+                <div class="item-content">
+                    <h3>{{ project.title }}</h3>
+                    <p class="description">{{ project.description }}</p>
+                    <div class="item-category">
+                        <span>{{ project.category.name }}</span>
+                    </div>
+                    <div class="item-meta">
+                        <span class="date">
+                            {{ project.created_date|date:"M Y" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+

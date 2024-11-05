@@ -1,0 +1,18 @@
+{% load static %}
+
+<nav class="navbar">
+    <div class="nav-container">
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-content">
+            <a href="#home" class="active">Home</a>
+            <a href="#about">About</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#testimonials">Testimonials</a>
+            <a href="#contact">Contact</a>
+            <a href="{% url 'events' %}">Events</a>
+        </div>
+    </div>
+</nav>
+<script src="{% static 'javascript/navbar.js' %}"></script>

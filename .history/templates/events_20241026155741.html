@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/events.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+    <header class="events-hero">
+        <div class="container animate-fade-up">
+            <h1>Upcoming Events</h1>
+           
+        </div>
+    </header>
+
+    <nav class="events-nav">
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="#calendar" class="active">Calendar</a></li>
+            <li><a href="#upcoming">Upcoming Events</a></li>
+            <li><a href="#booking">Book Now</a></li>
+        </ul>
+    </nav>
+
+    <section id="calendar" class="calendar-section">
+        <div class="calendar-container animate-fade-up">
+            <div class="calendar-header">
+                <button class="btn btn-outline">&lt; Previous</button>
+                <h2>October 2024</h2>
+                <button class="btn btn-outline">Next &gt;</button>
+            </div>
+            <div class="calendar-grid">
+                <!-- Calendar will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <section id="upcoming" class="upcoming-events">
+        <h2 class="section-title">Upcoming Events</h2>
+        
+        <div class="event-card animate-fade-up">
+            <div class="event-image">
+                <img src="{% static 'images/susan.jpg' %}" alt="Tech Conference">
+                <div class="event-date-badge">Oct 28</div>
+            </div>
+            <div class="event-details">
+                <h3>Tech Innovation Summit 2024</h3>
+                <div class="event-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Nairobi Convention Centre</span>
+                    <span><i class="fas fa-clock"></i> 9:00 AM - 5:00 PM</span>
+                </div>
+                <p>Join us for the biggest tech conference in East Africa...</p>
+                <button class="btn btn-primary" onclick="showMpesaModal()">Book Tickets</button>
+            </div>
+        </div>
+
+        <!-- Add more event cards -->
+    </section>
+
+   
+    <section id="booking" class="booking-form animate-fade-up">
+        <h2 class="section-title">Book an Event</h2>
+        
+        <form id="bookingForm">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Event Date</label>
+                    <input type="date" required>
+                </div>
+                <div class="input-group">
+                    <label>Event Type</label>
+                    <select required>
+                        <option value="">Select Event Type</option>
+                        <option value="corporate">Corporate Event</option>
+                        <option value="wedding">Wedding</option>
+                        <option value="conference">Conference</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Start Time</label>
+                    <input type="time" required>
+                </div>
+                <div class="input-group">
+                    <label>Duration (hours)</label>
+                    <input type="number" min="1" max="24" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Event Details</label>
+                <textarea rows="5" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Booking</button>
+        </form>
+    </section>
+
+    <script>
+        // Calendar Generation
+        function generateCalendar() {
+            const calendar = document.querySelector('.calendar-grid');
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            
+            // Add day headers
+            days.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            });
+
+            // Add calendar days
+            for (let i = 1; i <= 31; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = i;
+                
+                // Add event dots randomly
+                if (Math.random() > 0.7) {
+                    dayElement.classList.add('has-event');
+                    const dot = document.createElement('div');
+                    dot.className = 'event-dot';
+                    dayElement.appendChild(dot);
+                }
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Booking Form Submission
+        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Booking submitted successfully! We will contact you shortly.');
+            e.target.reset();
+        });
+
+        // Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.animate-fade-up').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+
+        // Initialize Calendar
+        generateCalendar();
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Active Navigation
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            const scrollY = window.pageYOffset;
+            sections.forEach(section => {
+                const sectionHeight = section.offsetHeight;
+                const sectionTop = section.offsetTop - 100;
+                const sectionId = section.getAttribute('id');
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    document.querySelector(`.events-nav a[href="#${sectionId}"]`).classList.add('active');
+                } else {
+                    document.querySelector(`.events-nav a[href="#${sectionId}"]`).classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body

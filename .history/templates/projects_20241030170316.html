@@ -1,0 +1,146 @@
+<!-- projects.html -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/projects.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+{% block title %}Projects Gallery - Susan Abong'o{% endblock %}
+
+<link rel="stylesheet" href="{% static 'css/projects.css' %}">
+<link rel="stylesheet" href="{% static 'css/videoplayer.css' %}">
+
+<div class="projects-container">
+    <!-- Header Section -->
+    <header class="projects-header">
+        <div class="header-content">
+            <h1 class="projects-title">Project Gallery</h1>
+            <p class="projects-subtitle">A showcase of my creative work and artistic journey</p>
+        </div>
+        
+        <!-- Controls Section -->
+        <div class="gallery-controls">
+            <div class="view-toggle">
+                <button class="toggle-btn active" data-view="grid" aria-label="Grid View">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="toggle-btn" data-view="masonry" aria-label="Masonry View">
+                    <i class="fas fa-columns"></i>
+                </button>
+            </div>
+            
+            <div class="filter-wrapper">
+                <button class="filter-btn active" data-filter="all">All Projects</button>
+                {% for category in categories %}
+                <button class="filter-btn" data-filter="{{ category.slug }}">
+                    {{ category.name }}
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Gallery Section -->
+    <div class="gallery-container">
+        <div class="gallery grid-view">
+            {% if projects %}
+                {% for project in projects %}
+                <div class="gallery-item" data-category="{{ project.category.slug }}" data-project-id="{{ project.id }}">
+                    <div class="item-inner">
+                        {% if project.video %}
+                            <!-- Video Player Component -->
+                            {% include 'partials/videoplayer.html' with project=project %}
+                        {% else %}
+                            <!-- Image Display -->
+                            <img src="{{ project.image.url }}" 
+                                 alt="{{ project.title }}" 
+                                 loading="lazy"
+                                 width="400"
+                                 height="300">
+                        {% endif %}
+                        
+                        <!-- Project Info Overlay -->
+                        <div class="item-overlay">
+                            <div class="item-content">
+                                <h3>{{ project.title }}</h3>
+                                <p>{{ project.description|truncatewords:20 }}</p>
+                                <div class="item-tags">
+                                    <span class="category-tag">{{ project.category.name }}</span>
+                                    {% for tool in project.tools.all|slice:":2" %}
+                                        <span class="tool-tag">{{ tool.name }}</span>
+                                    {% endfor %}
+                                    {% if project.tools.count > 2 %}
+                                        <span class="more-tag">+{{ project.tools.count|add:"-2" }}</span>
+                                    {% endif %}
+                                </div>
+                                <div class="project-meta">
+                                    <span class="date">{{ project.created_date|date:"M Y" }}</span>
+                                    {% if project.view_count %}
+                                        <span class="views">
+                                            <i class="fas fa-eye"></i> {{ project.view_count }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-projects">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No projects found in this category.</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div class="loading-spinner" style="display: none;">
+            <div class="spinner"></div>
+            <span>Loading more projects...</span>
+        </div>
+    </div>
+</div>
+
+<!-- Project Modal -->
+<div class="project-modal" aria-hidden="true">
+    <button class="modal-close" aria-label="Close modal">&times;</button>
+    <div class="modal-content">
+        <div class="modal-media"></div>
+        <div class="modal-details">
+            <h2 class="modal-title"></h2>
+            <p class="modal-description"></p>
+            <div class="modal-metadata">
+                <div class="metadata-item">
+                    <span class="metadata-label">Created:</span>
+                    <span class="metadata-value date"></span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Category:</span>
+                    <span class="metadata-value category"></span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Tools:</span>
+                    <span class="metadata-value tools"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button class="modal-nav prev" aria-label="Previous project">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="modal-nav next" aria-label="Next project">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+</div>
+
+
+
+<script src="{% static 'javascript/videoplayer.js' %}"></script>
+<script src="{% static 'javascript/projects.js' %}"></script>
+<script>
+    // Initialize with current category if any
+    const currentCategory = '{{ current_category|default:"all" }}';
+    const currentView = '{{ current_view|default:"grid" }}';
+</script>
+
+

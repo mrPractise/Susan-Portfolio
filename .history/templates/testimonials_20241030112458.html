@@ -1,0 +1,43 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/testimonials.css' %}">
+
+<section id="testimonials" class="testimonial-section">
+    <div class="testimonial-container">
+        <h2 class="testimonial-section-title">What People Say</h2>
+        <div class="testimonial-grid">
+            <!-- First testimonial -->
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <div class="testimonial-image">
+                        <img src="{% static 'images/client1.jpg' %}" alt="Client 1">
+                    </div>
+                    <div class="testimonial-info">
+                        <h3>John Doe</h3>
+                        <p>Creative Director, Studio X</p>
+                    </div>
+                </div>
+                <p class="testimonial-quote">
+                    "Susan's ability to blend creativity with technical excellence is remarkable. Her work on our animation project exceeded all expectations."
+                </p>
+            </div>
+            
+            <!-- Second testimonial -->
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <div class="testimonial-image">
+                        <img src="{% static 'images/client2.jpg' %}" alt="Client 2">
+                    </div>
+                    <div class="testimonial-info">
+                        <h3>Jane Smith</h3>
+                        <p>Art Director, Agency Y</p>
+                    </div>
+                </div>
+                <p class="testimonial-quote">
+                    "Working with Susan has been an absolute pleasure. Her attention to detail and creative vision brought our characters to life in ways we never imagined."
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'javascript/testimonials.js' %}"></script>

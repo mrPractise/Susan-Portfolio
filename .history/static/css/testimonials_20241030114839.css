@@ -1,0 +1,117 @@
+/* Testimonials Section Styles */
+.testimonial-section {
+    padding: 8rem 2rem;
+    background: white;
+    position: relative;
+}
+
+.testimonial-section::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: var(--light);
+    transform: skewY(-3deg);
+    transform-origin: left;
+}
+
+.testimonial-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.testimonial-section-title {
+    text-align: center;
+    margin-bottom: 4rem;
+    font-size: 2.5rem;
+    color: var(--primary);
+}
+
+.testimonial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+.testimonial-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    position: relative;
+
+    transform: translateY(20px);
+    will-change: opacity, transform; /* Performance optimization */
+}
+
+
+
+.testimonial-card:hover {
+    transform: translateY(-10px);
+}
+
+.testimonial-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.testimonial-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.testimonial-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.testimonial-info h3 {
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.testimonial-info p {
+    color: var(--accent);
+    font-size: 0.9rem;
+}
+
+.testimonial-quote {
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.6;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.testimonial-quote::before {
+    content: '"';
+    font-size: 4rem;
+    color: var(--accent);
+    opacity: 0.2;
+    position: absolute;
+    top: -1rem;
+    left: 0;
+}
+
+@media (max-width: 768px) {
+    .testimonial-section {
+        padding: 6rem 1rem;
+    }
+
+    .testimonial-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .testimonial-card {
+        padding: 1.5rem;
+    }
+}

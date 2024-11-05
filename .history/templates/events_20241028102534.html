@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="{% static 'css/global.css' %}">
+      <link rel="stylesheet" href="{% static 'css/events.css' %}">
+</head>
+<body>
+    <header class="events-hero">
+        <div class="container animate-fade-up">
+            <h1>Upcoming Events</h1>
+        </div>
+    </header>
+
+    <nav class="events-nav">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#calendar" class="active">Calendar</a></li>
+            <li><a href="#upcoming">Upcoming Events</a></li>
+        </ul>
+    </nav>
+
+    <section id="calendar" class="calendar-section">
+        <div class="calendar-container animate-fade-up">
+            <div class="calendar-header">
+                <button id="prevMonth">&lt; Previous</button>
+                <h2 id="currentMonth">October 2024</h2>
+                <button id="nextMonth">Next &gt;</button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Calendar will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <section id="upcoming" class="upcoming-events">
+        <h2 class="section-title">Upcoming Events</h2>
+        
+        <div class="event-card animate-fade-up">
+            <div class="event-image">
+                <img src="/api/placeholder/800/600" alt="Tech Conference">
+                <div class="event-date-badge">Oct 28</div>
+            </div>
+            <div class="event-details">
+                <h3>Tech Innovation Summit 2024</h3>
+                <div class="event-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Nairobi Convention Centre</span>
+                    <span><i class="fas fa-clock"></i> 9:00 AM - 5:00 PM</span>
+                </div>
+                <p>Join us for the biggest tech conference in East Africa, featuring industry leaders, innovative workshops, and networking opportunities.</p>
+                <button class="btn btn-primary" onclick="showMpesaModal()">Book Tickets</button>
+            </div>
+        </div>
+
+        <div class="event-card animate-fade-up">
+            <div class="event-image">
+                <img src="/api/placeholder/800/600" alt="Tech Workshop">
+                <div class="event-date-badge">Nov 15</div>
+            </div>
+            <div class="event-details">
+                <h3>AI & Machine Learning Workshop</h3>
+                <div class="event-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> Tech Hub Nairobi</span>
+                    <span><i class="fas fa-clock"></i> 10:00 AM - 4:00 PM</span>
+                </div>
+                <p>An intensive hands-on workshop covering the latest developments in AI and machine learning. Perfect for developers and tech enthusiasts.</p>
+                <button class="btn btn-primary" onclick="showMpesaModal()">Book Tickets</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Calendar Generation
+        function generateCalendar() {
+            const calendar = document.getElementById('calendarGrid');
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            calendar.innerHTML = '';
+            
+            // Add day headers
+            days.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day header';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            });
+
+            // Get current date info
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Add blank days
+            for (let i = 0; i < firstDay; i++) {
+                const blankDay = document.createElement('div');
+                blankDay.className = 'calendar-day';
+                calendar.appendChild(blankDay);
+            }
+
+            // Add calendar days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = i;
+                
+                // Add event dots randomly
+                if (Math.random() > 0.7) {
+                    dayElement.classList.add('has-event');
+                    const dot = document.createElement('div');
+                    dot.className = 'event-dot';
+                    dayElement.appendChild(dot);
+                }
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.animate-fade-up').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Initialize Calendar
+        generateCalendar();
+
+        // Month Navigation
+        let currentDate = new Date();
+        
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateCalendar();
+        });
+
+        function updateCalendar() {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('currentMonth').textContent = `${months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            generateCalendar();
+        }
+    </script>
+</body>
+</html>

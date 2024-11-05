@@ -1,0 +1,140 @@
+{% load static %}
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <h2 class="contact-section-title">Contact Information</h2>
+    <div class="contact-wrapper">
+        
+        <div class="contact-info contact-animate-slide">
+            
+            
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div>
+                    <h3>Phone</h3>
+                    <p>+254 XXX XXX XXX</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                    <h3>Email</h3>
+                    <p>contact@susanabongo.com</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                    <h3>Location</h3>
+                    <p>Nairobi, Kenya</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <h3>Business Hours</h3>
+                    <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form contact-animate-fade">
+            <h2 class="contact-section-title">Send a Message</h2>
+            
+            <form id="contactForm">
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="service">Service Type</label>
+                    <select id="service" required>
+                        <option value="">Select a service</option>
+                        <option value="art">Animation Services</option>
+                        <option value="modeling">Modeling Services</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+</section>
+<script>
+// Add this JavaScript to your existing contact form
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const submitButton = this.querySelector('button[type="submit"]');
+    const buttonText = submitButton.querySelector('.button-text');
+    const buttonLoader = submitButton.querySelector('.button-loader');
+    
+    try {
+        // Disable button and show loading state
+        submitButton.disabled = true;
+        buttonText.style.display = 'none';
+        buttonLoader.style.display = 'inline-flex';
+        
+        // Get form data
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            service: document.getElementById('service').value,
+            message: document.getElementById('message').value
+        };
+        
+        // Send the request
+        const response = await fetch('/send-contact-email/', {  // Update this URL to match your URL pattern
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Show success message
+            alert(data.message);
+            // Reset form
+            this.reset();
+        } else {
+            // Show error message
+            alert(data.message || 'An error occurred. Please try again.');
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while sending your message. Please try again.');
+    } finally {
+        // Reset button state
+        submitButton.disabled = false;
+        buttonText.style.display = 'inline';
+        buttonLoader.style.display = 'none';
+    }
+});
+</script>

@@ -1,0 +1,651 @@
+/* Common utility classes */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Flexbox utilities */
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Button styles */
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: white;
+    text-align: center;
+    flex-shrink: 0;
+    margin-top: auto;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-sm {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Hero section */
+.events-hero {
+    height: 60vh;
+    background: var(--accent);
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+/* Navigation */
+.events-nav {
+    position: sticky;
+    top: 60px;
+    background: white;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.events-nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem;
+    list-style: none;
+}
+
+.events-nav a {
+    text-decoration: none;
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.events-nav a:hover,
+.events-nav a.active {
+    background: var(--accent);
+    color: white;
+}
+
+/* Calendar styles */
+.calendar-section {
+    padding: 4rem 2rem;
+    background: var(--light);
+    transition: transform 0.3s ease-in-out;
+}
+
+.calendar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Calendar header */
+.calendar-header {
+    background: var(--accent);
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendar-header button {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.calendar-header button:hover {
+    background: white;
+    color: var(--accent);
+}
+
+/* Calendar grid */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    background: #eee;
+    padding: 1rem;
+    border-radius: 0 0 20px 20px;
+}
+
+.calendar-day {
+    position: relative;
+    background: white;
+    min-height: 100px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.calendar-day:hover {
+    background: #f0f7ff;
+}
+
+.calendar-day.header {
+    min-height: auto;
+    background: #f8f9fa;
+    font-weight: bold;
+    padding: 1rem 0.5rem;
+}
+
+.calendar-day.has-event {
+    background: #f8f9fa;
+    border: 1px solid var(--accent);
+}
+
+/* Calendar day components */
+.day-number {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 0.9rem;
+    color: #666;
+    z-index: 1;
+}
+
+.event-dots {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+.event-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.event-dot:hover {
+    transform: scale(1.5);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.event-dot.more {
+    background: #95a5a6;
+}
+
+/* Events section */
+.upcoming-events {
+    padding: 4rem 2rem;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+    color: var(--text);
+}
+
+.events-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Event cards */
+.event-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    height: 500px;
+    width: 100%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    transition: transform 0.3s ease;
+    margin: 1rem auto;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Event card components */
+.event-image {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.event-date-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-weight: bold;
+    color: var(--accent);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.event-details {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.event-details h3 {
+    font-size: 1.5rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+/* Event metadata */
+.event-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    color: #666;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+
+.event-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.event-meta i {
+    color: var(--accent);
+    width: 16px;
+}
+
+.event-description {
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    display: -webkit-box;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.event-description p {
+    margin: 0;
+}
+
+/* Share functionality */
+.share-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.share-button:hover {
+    transform: scale(1.1);
+}
+
+
+.share-menu {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: none;
+    z-index: 1002;
+    margin-top: 45px;
+}
+
+.share-menu.active {
+    display: block;
+}
+
+
+
+.share-menu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px 25px;
+    color: #333;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out; /* Add smooth transition */
+    transform-origin: left center; /* Makes the scale animation look better */
+}
+
+.share-menu-item:hover {
+    transform: scale(1.05); /* Slightly reduced scale for better UX */
+    padding-left: 20px; /* Slight padding increase on hover */
+    background-color: var(--accent); /* Optional: change text color on hover */
+}
+
+.share-menu-item i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    transition: transform 0.2s ease; /* Add transition for icon */
+}
+
+.share-menu-item:hover i {
+    transform: scale(1.2); /* Make icon slightly larger on hover */
+}
+
+
+.copy-feedback {
+    position: absolute;
+    right: 15px;
+    background: #4CAF50;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    transform: translateY(-50%);
+    transition: opacity 0.2s ease-in-out;
+}
+
+.copy-feedback.active {
+    opacity: 1;
+}
+/* Overlays */
+
+
+
+
+.calendar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: 999;
+}
+
+
+.calendar-overlay.active {
+    display: block;
+}
+
+/* Modal styles */
+.day-events-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 3000;
+}
+
+.day-events-modal.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow: hidden;
+}
+
+.modal-header {
+    padding: 1rem;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.modal-body {
+    padding: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* Day events list */
+.day-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.day-event-item {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.day-event-item:last-child {
+    border-bottom: none;
+}
+
+.day-event-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.day-event-item h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--accent);
+}
+    .calendar-close-btn {
+        display: none;
+    }
+/* Social media icons */
+.fa-whatsapp { color: #25d366; }
+.fa-facebook { color: #1877f2; }
+.fa-twitter { color: #1da1f2; }
+.fa-linkedin { color: #0a66c2; }
+.fa-envelope { color: #ea4335; }
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .calendar-section {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        z-index: 1001;
+        background: white;
+        padding: 1rem;
+        overflow-y: auto;
+        transition: left 0.3s ease-in-out;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .calendar-section::-webkit-scrollbar {
+        display: none;
+    }
+
+    .calendar-section.active {
+        left: 0;
+    }
+
+    .calendar-mobile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--accent);
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 1002;
+    }
+
+    .calendar-close-btn {
+        background: none;
+        display: grid;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    .calendar-container {
+        max-width: none;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .calendar-day {
+        min-height: 80px;
+        padding: 0.25rem;
+    }
+
+    .calendar-day.header {
+        font-size: 0.8rem;
+    }
+
+    .event-dots {
+        bottom: 4px;
+        gap: 3px;
+    }
+
+    .event-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .day-number {
+        top: 4px;
+        left: 4px;
+        font-size: 0.8rem;
+    }
+
+    .event-card {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 450px;
+    }
+
+    .event-image {
+        height: 250px;
+    }
+
+    .event-details {
+        padding: 1.5rem;
+    }
+
+    .event-description {
+        line-clamp: 3;
+    }
+
+    .events-nav ul {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .calendar-grid {
+        font-size: 0.8rem;
+    }
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .modal-body {
+        max-height: calc(90vh - 80px);
+    }
+}
+
+/* Main optimizations made:
+1. Consolidated repeated flex patterns into utility classes
+2. Grouped related styles together (calendar, events, modals, etc.)
+3. Combined similar overlay styles
+4. Organized media queries
+5. Combined similar transition and animation properties
+6. Grouped button styles
+7. Standardized spacing and shadow values
+8. Combined mobile-specific styles
+9. Removed duplicate .calendar-day.has-event declaration
+10. Organized social media colors together
+*/

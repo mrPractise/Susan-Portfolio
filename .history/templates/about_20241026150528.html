@@ -1,0 +1,121 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Susan Abong'o</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/about.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <section class="about-hero">
+        <div class="about-content">
+            <div class="profile-image animate-fade-up">
+                <img src="{% static 'images/susan.jpg' %}" alt="Susan Abong'o">
+            </div>
+            <div class="animate-slide-in">
+                <h1>About Me</h1>
+                <p>Digital artist, model, and event host based in Nairobi, Kenya</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="biography">
+        <div class="animate-fade-up">
+            <h2 class="section-title">My Story</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae eros quis nisi pulvinar tempor. 
+               Suspendisse potenti. Vivamus eget justo sit amet nisi varius tincidunt.</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item animate-slide-in">
+                <h3>2024</h3>
+                <p>Animated several short films</p>
+            </div>
+            <div class="timeline-item animate-slide-in">
+                <h3>2023</h3>
+                <p>Did 3d modelling course</p>
+            </div>
+            <div class="timeline-item animate-slide-in">
+                <h3>2022</h3>
+                <p>Hosted events</p>
+            </div>
+            <div class="timeline-item animate-slide-in">
+                <h3>2021</h3>
+                <p>Did 2d modelling course</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="skills">
+        <div class="skill-category animate-fade-up">
+            <h3>2D Art</h3>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="90"></div>
+            </div>
+            <p>Digital Painting</p>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="85"></div>
+            </div>
+            <p>Character Design</p>
+        </div>
+
+        <div class="skill-category animate-fade-up">
+            <h3>3D Art</h3>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="95"></div>
+            </div>
+            <p>3D Modeling</p>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="80"></div>
+            </div>
+            <p>Animation</p>
+        </div>
+
+        <div class="skill-category animate-fade-up">
+            <h3>Event Hosting</h3>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="95"></div>
+            </div>
+            <p>Public Speaking</p>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="90"></div>
+            </div>
+            <p>Event Management</p>
+        </div>
+    </section>
+
+    <script>
+        // Animation observer (same as before)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    
+                    // Animate skill bars if they exist
+                    const skillBars = entry.target.querySelectorAll('.skill-progress');
+                    skillBars.forEach(bar => {
+                        const progress = bar.dataset.progress;
+                        bar.style.width = `${progress}%`;
+                    });
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.animate-fade-up, .animate-slide-in, .skill-category').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

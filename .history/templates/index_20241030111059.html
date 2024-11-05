@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}"> <!-- Global styles first -->
+</head>
+
+<body>
+    <!-- Only show Django messages if it's not an AJAX request -->
+    {% if messages and not request.headers.x_requested_with %}
+        {% include "alert-messages.html" %}
+    {% endif %}
+
+    {% block navbar %}
+        {% include 'navbar.html' %}
+    {% endblock %}
+
+    {% block homepage %}
+        {% include 'home.html' %}
+    {% endblock %}
+
+    {% block aboutpage %}
+        {% include 'about.html' %}
+    {% endblock %}
+
+    {% block portfolio %}
+        {% include 'portfolio.html' %}
+    {% endblock %}
+
+    {% block testimonials %}
+        {% include 'testimonials.html' %}
+    {% endblock %}
+
+    {% block contact %}
+        {% include 'contact.html' %}
+    {% endblock %}
+
+    <!-- Add your scripts at the end of body -->
+    <script src="{% static 'javascript/navigation.js' %}"></script>
+    <script src="{% static 'javascript/contact.js' %}"></script>
+
+    <!-- Optional: Clear Django messages after displaying them -->
+    {% if messages %}
+    <script>
+        // Remove Django messages after 5 seconds
+        setTimeout(() => {
+            const djangoMessages = document.querySelector('.django-messages');
+            if (djangoMessages) {
+                djangoMessages.style.opacity = '0';
+                setTimeout(() => djangoMessages.remove(), 500);
+            }
+        }, 5000);
+    </script>
+    {% endif %}
+</body>
+</html>

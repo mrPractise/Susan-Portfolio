@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Susan Abong'o - Artist & Event Host</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Home-specific styles */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+                        url('/api/placeholder/1920/1080') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.5s;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.7s;
+        }
+
+        .hero .btn {
+            opacity: 0;
+            animation: fadeUp 0.8s ease forwards 0.9s;
+        }
+
+        .featured-works {
+            padding: 5rem 2rem;
+            background: var(--light);
+        }
+
+        .works-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .work-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .work-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .work-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .work-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .work-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .work-item:hover .work-overlay {
+            transform: translateY(0);
+        }
+
+        .quick-links {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .quick-links-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .quick-link {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+            background: var(--light);
+        }
+
+        .quick-link:hover {
+            transform: translateY(-5px);
+        }
+
+        .quick-link i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .quick-links-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Susan Abong'o</a>
+            <button class="hamburger">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="about.html">About</a>
+                <a href="works.html">Other Works</a>
+                <a href="testimonials.html">Testimonials</a>
+                <a href="contact.html">Contact</a>
+                <a href="events.html">Events</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Susan Abong'o</h1>
+            <p>2D/3D Artist | Model | Event Host</p>
+            <p>Creating visual stories that captivate and inspire</p>
+            <a href="portfolio.html" class="btn btn-primary">Explore My Work</a>
+        </div>
+    </section>
+
+    <section class="featured-works">
+        <div class="works-grid">
+            <div class="work-item animate-fade-up" style="animation-delay: 0.3s;">
+                <img src="/api/placeholder/400/300" alt="2D Artwork">
+                <div class="work-overlay">
+                    <h3>Digital Illustration</h3>
+                    <p>2D Art Collection</p>
+                </div>
+            </div>
+            <div class="work-item animate-fade-up" style="animation-delay: 0.5s;">
+                <img src="/api/placeholder/400/300" alt="3D Artwork">
+                <div class="work-overlay">
+                    <h3>3D Character</h3>
+                    <p>Character Design</p>
+                </div>
+            </div>
+            <div class="work-item animate-fade-up" style="animation-delay: 0.7s;">
+                <img src="/api/placeholder/400/300" alt="Event Hosting">
+                <div class="work-overlay">
+                    <h3>Event Hosting</h3>
+                    <p>Professional MC</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="quick-links">
+        <div class="quick-links-grid">
+            <div class="quick-link animate-scale-in" style="animation-delay: 0.3s;">
+                <i class="fas fa-paint-brush"></i>
+                <h3>Art Services</h3>
+                <p>Custom artwork and illustrations</p>
+                <a href="portfolio.html" class="btn btn-outline">View Portfolio</a>
+            </div>
+            <div class="quick-link animate-scale-in" style="animation-delay: 0.5s;">
+                <i class="fas fa-microphone"></i>
+                <h3>Event Hosting</h3>
+                <p>Professional MC services</p>
+                <a href="events.html" class="btn btn-outline">Book Now</a>
+            </div>
+            <div class="quick-link animate-scale-in" style="animation-delay: 0.7s;">
+                <i class="fas fa-camera"></i>
+                <h3>Modeling</h3>
+                <p>Professional modeling services</p>
+                <a href="works.html" class="btn btn-outline">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Navigation Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: "0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.animate-fade-up, .animate-scale-in').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

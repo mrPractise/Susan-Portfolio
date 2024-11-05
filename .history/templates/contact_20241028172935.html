@@ -1,0 +1,217 @@
+{% load static %}
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <h2 class="contact-section-title">Contact Information</h2>
+    <div class="contact-wrapper">
+        
+        <div class="contact-info contact-animate-slide">
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div>
+                    <h3>Phone</h3>
+                    <p>+254 XXX XXX XXX</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                    <h3>Email</h3>
+                    <p>contact@susanabongo.com</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                    <h3>Location</h3>
+                    <p>Nairobi, Kenya</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <h3>Business Hours</h3>
+                    <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form contact-animate-fade">
+            <h2 class="contact-section-title">Send a Message</h2>
+            
+            <form id="contactForm">
+                {% csrf_token %}  <!-- Added CSRF token -->
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required>
+                    <div class="error-message" id="name-error"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error-message" id="email-error"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="service">Service Type</label>
+                    <select id="service" name="service" required>
+                        <option value="">Select a service</option>
+                        <option value="art">Animation Services</option>
+                        <option value="modeling">Modeling Services</option>
+                    </select>
+                    <div class="error-message" id="service-error"></div>
+                </div>
+
+                <div class="input-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                    <div class="error-message" id="message-error"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <span class="button-text">Send Message</span>
+                    <span class="button-loader" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Sending...
+                    </span>
+                </button>
+
+                <div class="form-response" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    const submitButton = form.querySelector('button[type="submit"]');
+    const buttonText = submitButton.querySelector('.button-text');
+    const buttonLoader = submitButton.querySelector('.button-loader');
+    const formResponse = form.querySelector('.form-response');
+    
+    // Clear previous error messages and response
+    form.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+    formResponse.style.display = 'none';
+    formResponse.textContent = '';
+    
+    // Remove error class from all inputs
+    form.querySelectorAll('input, textarea, select').forEach(el => el.classList.remove('error'));
+    
+    try {
+        // Disable button and show loading state
+        submitButton.disabled = true;
+        buttonText.style.display = 'none';
+        buttonLoader.style.display = 'inline-flex';
+        
+        // Get form data
+        const formData = {
+            name: document.getElementById('name').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            service: document.getElementById('service').value,
+            message: document.getElementById('message').value.trim()
+        };
+        
+        // Send the request
+        const response = await fetch('{% url "send_contact_email" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        // Check for errors first
+        if (!response.ok) {
+            // Handle error case first
+            if (data.errors) {
+                // Handle field-specific errors
+                Object.entries(data.errors).forEach(([field, errors]) => {
+                    const errorEl = document.getElementById(`${field}-error`);
+                    if (errorEl) {
+                        errorEl.textContent = Array.isArray(errors) ? errors[0] : errors;
+                        // Add error class to input field
+                        const inputField = document.getElementById(field);
+                        if (inputField) {
+                            inputField.classList.add('error');
+                        }
+                    }
+                });
+                
+                // Show general error message
+                formResponse.style.display = 'block';
+                formResponse.className = 'form-response error';
+                formResponse.textContent = 'Please correct the errors below.';
+                return; // Exit early if there are validation errors
+            } else {
+                // Handle general error
+                formResponse.style.display = 'block';
+                formResponse.className = 'form-response error';
+                formResponse.textContent = data.message || 'An error occurred. Please try again.';
+                return; // Exit early if there's a general error
+            }
+        }
+        
+        // If we get here, it means the submission was successful
+        formResponse.style.display = 'block';
+        formResponse.className = 'form-response success';
+        formResponse.textContent = data.message;
+        form.reset();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        formResponse.style.display = 'block';
+        formResponse.className = 'form-response error';
+        formResponse.textContent = 'An error occurred while sending your message. Please try again.';
+    } finally {
+        // Reset button state
+        submitButton.disabled = false;
+        buttonText.style.display = 'inline';
+        buttonLoader.style.display = 'none';
+    }
+});
+
+// Add input event listeners to clear errors when user starts typing
+document.querySelectorAll('#contactForm input, #contactForm textarea, #contactForm select').forEach(element => {
+    element.addEventListener('input', function() {
+        // Clear error message for this field
+        const errorEl = document.getElementById(`${this.id}-error`);
+        if (errorEl) {
+            errorEl.textContent = '';
+        }
+        // Remove error class from input
+        this.classList.remove('error');
+        
+        // Clear general form response if all fields are valid
+        const form = document.getElementById('contactForm');
+        const hasErrors = Array.from(form.querySelectorAll('.error-message'))
+            .some(el => el.textContent.trim() !== '');
+        if (!hasErrors) {
+            const formResponse = form.querySelector('.form-response');
+            if (formResponse) {
+                formResponse.style.display = 'none';
+                formResponse.textContent = '';
+            }
+        }
+    });
+});
+
+</script>
+

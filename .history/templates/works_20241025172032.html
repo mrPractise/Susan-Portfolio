@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Other Works - Susan Abong'o</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/works.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+
+    <header class="works-header">
+        <div class="container">
+            <h1 class="animate-fade-up">Professional Works</h1>
+            <p class="animate-fade-up">Modeling Portfolio & Professional Services</p>
+        </div>
+    </header>
+
+    <nav class="works-nav">
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="#modeling" class="active">Modeling</a></li>
+            <li><a href="#showreel">Showreel</a></li>
+            <li><a href="#social">Social Media</a></li>
+            <li><a href="#booking">Booking</a></li>
+        </ul>
+    </nav>
+
+    <section id="modeling" class="modeling-section">
+        <h2 class="section-title animate-fade-up">Modeling Portfolio</h2>
+        <div class="gallery-grid">
+            <!-- Repeat this for multiple images -->
+            <div class="gallery-item animate-fade-up">
+                <img src="{% static 'images/susan.jpg' %}" alt="Fashion Shoot">
+                <div class="gallery-overlay">
+                    <h3>Summer Collection</h3>
+                    <p>Fashion Week 2024</p>
+                </div>
+            </div>
+            <!-- Add more gallery items -->
+        </div>
+    </section>
+
+    <section id="showreel" class="video-showreel animate-fade-up">
+        <iframe src="about:blank" allowfullscreen></iframe>
+    </section>
+
+    <section id="social" class="social-feed">
+        <h2 class="section-title animate-fade-up">Social Media Highlights</h2>
+        <div class="social-grid">
+            <!-- Repeat for multiple posts -->
+            <div class="social-post animate-fade-up">
+                <img src="{% static 'images/susan.jpg' %}" alt="Social Post">
+                <div class="social-content">
+                    <p>Behind the scenes at latest photoshoot</p>
+                    <div class="social-meta">
+                        <span><i class="fas fa-heart"></i> 1.2k</span>
+                        <span><i class="fas fa-comment"></i> 48</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Add more social posts -->
+        </div>
+    </section>
+
+    <section id="booking" class="booking-section">
+        <div class="container animate-fade-up">
+            <h2>Book Me for Your Next Project</h2>
+            <p>Available for fashion shows, photo shoots, and promotional events</p>
+            <a href="#" class="btn btn-outline">Contact Now</a>
+        </div>
+    </section>
+
+    <script>
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        // Observe all animated elements
+        document.querySelectorAll('.animate-fade-up').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('.works-nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Active nav link updating on scroll
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            const scrollY = window.pageYOffset;
+            sections.forEach(section => {
+                const sectionHeight = section.offsetHeight;
+                const sectionTop = section.offsetTop - 100;
+                const sectionId = section.getAttribute('id');
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    document.querySelector(`.works-nav a[href="#${sectionId}"]`).classList.add('active');
+                } else {
+                    document.querySelector(`.works-nav a[href="#${sectionId}"]`).classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

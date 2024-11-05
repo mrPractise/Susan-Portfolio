@@ -1,0 +1,12 @@
+{% load static %}
+<head>
+<link rel="stylesheet" href="{% static 'css/alert-messages.css' %}">
+</head>
+<div class="alert-container">
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+    </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,247 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/events.css' %}">
+</head>
+
+<body>
+    <header class="events-hero">
+        <div class="container animate-fade-up">
+            <h1>Upcoming Events</h1>
+        </div>
+    </header>
+
+<nav class="events-nav">
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="#calendar" data-section="calendar">Calendar</a></li>
+        <li><a href="#upcoming" data-section="upcoming">Upcoming Events</a></li>
+    </ul>
+</nav>
+
+    <section id="calendar" class="calendar-section">
+        <div class="calendar-container animate-fade-up">
+            <div class="calendar-header">
+                <button id="prevMonth">&lt; Previous</button>
+                <h2>{{ month_name }} {{ year }}</h2>
+                <button id="nextMonth">Next &gt;</button>
+            </div>
+            
+            <div class="calendar-grid">
+                <!-- Day headers -->
+                <div class="calendar-day header">Sun</div>
+                <div class="calendar-day header">Mon</div>
+                <div class="calendar-day header">Tue</div>
+                <div class="calendar-day header">Wed</div>
+                <div class="calendar-day header">Thu</div>
+                <div class="calendar-day header">Fri</div>
+                <div class="calendar-day header">Sat</div>
+
+                <!-- Calendar days -->
+                {% for week in calendar_data %}
+                    {% for day in week %}
+                        <div class="calendar-day{% if day.events %} has-event{% endif %}{% if day.is_today %} today{% endif %}{% if day.is_past %} past{% endif %}">
+                            {% if day.day != 0 %}
+                                <span class="day-number">{{ day.day }}</span>
+                                {% if day.events %}
+                                    <div class="event-dots">
+                                        {% for event in day.events|slice:":3" %}
+                                            <div 
+                                                class="event-dot" 
+                                                onclick="window.location.href='{% url 'event-detail' event.slug %}'"
+                                                title="{{ event.title }}"
+                                            ></div>
+                                        {% endfor %}
+                                        {% if day.events|length > 3 %}
+                                            <div 
+                                                class="event-dot more" 
+                                                title="+{{ day.events|length|add:'-3' }} more events"
+                                            ></div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="upcoming" class="upcoming-events">
+        <h2 class="section-title">Upcoming Events</h2>
+        
+        <div class="events-grid">
+            {% for event in upcoming_events %}
+            <div class="event-card animate-fade-up">
+                <div class="event-image">
+                    {% if event.image %}
+                        <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                    {% else %}
+                        <img src="{% static 'images/default-event.jpg' %}" alt="{{ event.title }}">
+                    {% endif %}
+                    <div class="event-date-badge">{{ event.date|date:"M d" }}</div>
+                    <div class="share-button" onclick="toggleShareMenu(this)">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="share-menu">
+                        <a href="#" class="share-menu-item" data-platform="whatsapp" data-title="{{ event.title }}" data-description="{{ event.description }}">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                    </div>
+                </div>
+                <div class="event-details">
+                    <h3>{{ event.title }}</h3>
+                    <div class="event-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> {{ event.venue }}</span>
+                        <span><i class="fas fa-clock"></i> {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</span>
+                    </div>
+                    <div class="event-description">
+                        <p>{{ event.description }}</p>
+                    </div>
+                    <a href="{% url 'event-detail' event.slug %}" class="btn btn-primary">Book Tickets</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Share overlay -->
+    <div id="shareOverlay" class="share-overlay"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Calendar navigation
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            const currentUrl = new URL(window.location);
+            const currentMonth = parseInt(currentUrl.searchParams.get('month')) || new Date().getMonth() + 1;
+            const currentYear = parseInt(currentUrl.searchParams.get('year')) || new Date().getFullYear();
+            
+            let newMonth = currentMonth - 1;
+            let newYear = currentYear;
+            
+            if (newMonth < 1) {
+                newMonth = 12;
+                newYear -= 1;
+            }
+            
+            window.location.href = `?month=${newMonth}&year=${newYear}#calendar`;
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            const currentUrl = new URL(window.location);
+            const currentMonth = parseInt(currentUrl.searchParams.get('month')) || new Date().getMonth() + 1;
+            const currentYear = parseInt(currentUrl.searchParams.get('year')) || new Date().getFullYear();
+            
+            let newMonth = currentMonth + 1;
+            let newYear = currentYear;
+            
+            if (newMonth > 12) {
+                newMonth = 1;
+                newYear += 1;
+            }
+            
+            window.location.href = `?month=${newMonth}&year=${newYear}#calendar`;
+        });
+    });
+ // Get all sections that we want to track
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.events-nav a');
+    
+    // Add smooth scrolling to nav links
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').slice(1);
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    // Function to update active nav link
+    function updateActiveNav() {
+        let currentSection = '';
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100; // Adjust offset as needed
+            const sectionHeight = section.offsetHeight;
+            const scrollPosition = window.scrollY;
+
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                currentSection = section.getAttribute('id');
+            }
+        });
+
+        // Update nav links
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${currentSection}`) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // Add scroll event listener with debounce for better performance
+    let isScrolling;
+    window.addEventListener('scroll', function() {
+        clearTimeout(isScrolling);
+        isScrolling = setTimeout(updateActiveNav, 50);
+    });
+
+    // Also update on page load
+    updateActiveNav();
+    
+    // Share functionality
+    function toggleShareMenu(button) {
+        const menu = button.nextElementSibling;
+        const overlay = document.getElementById('shareOverlay');
+        
+        // Close any open share menus
+        document.querySelectorAll('.share-menu.active').forEach(m => {
+            if (m !== menu) m.classList.remove('active');
+        });
+
+        menu.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+
+    // Share handlers
+    document.querySelectorAll('.share-menu-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const platform = this.dataset.platform;
+            const title = this.dataset.title;
+            const description = this.dataset.description;
+            
+            if (platform === 'whatsapp') {
+                const text = `${title}\n${description}\n${window.location.href}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+            }
+            
+            // Close menu after sharing
+            setTimeout(() => {
+                document.querySelectorAll('.share-menu.active').forEach(menu => menu.classList.remove('active'));
+                document.getElementById('shareOverlay').classList.remove('active');
+            }, 100);
+        });
+    });
+
+    // Close overlay when clicking outside
+    document.getElementById('shareOverlay').addEventListener('click', function() {
+        document.querySelectorAll('.share-menu.active').forEach(menu => menu.classList.remove('active'));
+        this.classList.remove('active');
+    });
+    </script>
+</body>
+</html>

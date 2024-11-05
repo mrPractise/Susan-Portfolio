@@ -1,0 +1,136 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/events.css' %}">
+</head>
+
+<body>
+    <header class="events-hero">
+        <div class="container animate-fade-up">
+            <h1>Upcoming Events</h1>
+        </div>
+    </header>
+
+    <nav class="events-nav">
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="#calendar" data-section="calendar">Calendar</a></li>
+            <li><a href="#upcoming" data-section="upcoming">Upcoming Events</a></li>
+        </ul>
+    </nav>
+
+    <section id="calendar" class="calendar-section">
+        <div class="calendar-container animate-fade-up">
+            <div class="calendar-header">
+                <button id="prevMonth">&lt; Previous</button>
+                <h2>{{ month_name }} {{ year }}</h2>
+                <button id="nextMonth">Next &gt;</button>
+            </div>
+            
+            <div class="calendar-grid">
+                <!-- Day headers -->
+                <div class="calendar-day header">Sun</div>
+                <div class="calendar-day header">Mon</div>
+                <div class="calendar-day header">Tue</div>
+                <div class="calendar-day header">Wed</div>
+                <div class="calendar-day header">Thu</div>
+                <div class="calendar-day header">Fri</div>
+                <div class="calendar-day header">Sat</div>
+
+                <!-- Calendar days -->
+                {% for week in calendar_data %}
+                    {% for day in week %}
+                        <div class="calendar-day{% if day.events %} has-event{% endif %}{% if day.is_today %} today{% endif %}{% if day.is_past %} past{% endif %}"
+                            {% if day.day != 0 and day.events %}
+                                onclick="showDayEvents(this, '{{ day.day }}', {{ day.events|safe }})"
+                            {% endif %}>
+                            {% if day.day != 0 %}
+                                <span class="day-number">{{ day.day }}</span>
+                                {% if day.events %}
+                                    <div class="event-dots">
+                                        {% for event in day.events|slice:":3" %}
+                                            <div class="event-dot" 
+                                                title="{{ event.title }}"
+                                                data-event-id="{{ event.id }}"></div>
+                                        {% endfor %}
+                                        {% if day.events|length > 3 %}
+                                            <div class="event-dot more" 
+                                                title="+{{ day.events|length|add:'-3' }} more events"></div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="upcoming" class="upcoming-events">
+        <h2 class="section-title">Upcoming Events</h2>
+        
+        <div class="events-grid">
+            {% for event in upcoming_events %}
+            <div class="event-card animate-fade-up">
+                <div class="event-image">
+                    {% if event.image %}
+                        <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                    {% else %}
+                        <img src="{% static 'images/default-event.jpg' %}" alt="{{ event.title }}">
+                    {% endif %}
+                    <div class="event-date-badge">{{ event.date|date:"M d" }}</div>
+                    <div class="share-button" onclick="toggleShareMenu(this)">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <div class="share-menu">
+                        <a href="#" class="share-menu-item" data-platform="whatsapp" data-title="{{ event.title }}" data-description="{{ event.description }}">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                    </div>
+                </div>
+                <div class="event-details">
+                    <h3>{{ event.title }}</h3>
+                    <div class="event-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> {{ event.venue }}</span>
+                        <span><i class="fas fa-clock"></i> {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</span>
+                    </div>
+                    <div class="event-description">
+                        <p>{{ event.description }}</p>
+                    </div>
+                    <a href="{% url 'event-detail' event.slug %}" class="btn btn-primary">Book Tickets</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Share overlay -->
+    <div id="shareOverlay" class="share-overlay"></div>
+
+    <!-- Day Events Modal -->
+    <div id="dayEventsModal" class="day-events-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Events on <span id="selectedDate"></span></h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="dayEventsList" class="day-events-list">
+                    <!-- Events will be inserted here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the JavaScript file -->
+    <script src="{% static 'js/events.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="{% static 'css/global.css' %}">
+      <link rel="stylesheet" href="{% static 'css/event-detail.css' %}">
+</head>
+
+
+<body>
+
+<div class="event-detail-page">
+    <div class="event-hero" style="background-image: url('{{ event.image.url }}')">
+        <div class="overlay"></div>
+        <div class="container">
+            <h1>{{ event.title }}</h1>
+        </div>
+    </div>
+
+    <div class="event-content">
+        <div class="event-info">
+            <div class="event-meta">
+                <div class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ event.date|date:"l, F j, Y" }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ event.venue }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>KES {{ event.price|floatformat:2 }}</span>
+                </div>
+                <div class="meta-item {% if event.is_sold_out %}sold-out{% endif %}">
+                    <i class="fas fa-users"></i>
+                    <span>{{ event.available_seats }} seats remaining</span>
+                </div>
+            </div>
+
+            <div class="event-description">
+                {{ event.description|linebreaks }}
+            </div>
+
+            {% if not event.is_sold_out %}
+            <div class="payment-section">
+                <h2>Book Your Ticket</h2>
+                <div class="ticket-form">
+                    <div class="form-group">
+                        <label for="tickets">Number of Tickets</label>
+                        <div class="ticket-counter">
+                            <button type="button" onclick="decrementTickets()">-</button>
+                            <input type="number" id="tickets" name="tickets" value="1" min="1" max="{{ event.available_seats }}">
+                            <button type="button" onclick="incrementTickets()">+</button>
+                        </div>
+                    </div>
+                    <div class="total-amount">
+                        Total: KES <span id="totalAmount">{{ event.price }}</span>
+                    </div>
+                </div>
+
+                <div class="mpesa-section">
+                    <h3>Pay via M-PESA</h3>
+                    <form id="mpesaForm" class="mpesa-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="phone">M-PESA Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="254700000000" required>
+                        </div>
+                        <div class="mpesa-instructions">
+                            <p>1. Enter your M-PESA registered phone number</p>
+                            <p>2. You will receive a prompt on your phone</p>
+                            <p>3. Enter your M-PESA PIN to complete the payment</p>
+                        </div>
+                        <button type="submit" class="pay-button">
+                            Pay KES <span id="payAmount">{{ event.price }}</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="sold-out-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <h2>Sold Out</h2>
+                <p>Sorry, this event is sold out.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+
+function updateTotal() {
+    const ticketCount = parseInt(document.getElementById('tickets').value);
+    const price = parseFloat('{{ event.price }}');
+    const total = ticketCount * price;
+    
+    document.getElementById('totalAmount').textContent = total.toFixed(2);
+    document.getElementById('payAmount').textContent = total.toFixed(2);
+}
+
+function incrementTickets() {
+    const input = document.getElementById('tickets');
+    const maxTickets = parseInt('{{ event.available_seats }}');
+    if (parseInt(input.value) < maxTickets) {
+        input.value = parseInt(input.value) + 1;
+        updateTotal();
+    }
+}
+
+function decrementTickets() {
+    const input = document.getElementById('tickets');
+    if (parseInt(input.value) > 1) {
+        input.value = parseInt(input.value) - 1;
+        updateTotal();
+    }
+}
+
+document.getElementById('tickets').addEventListener('change', updateTotal);
+
+
+
+</script>
+</body>
+</html>

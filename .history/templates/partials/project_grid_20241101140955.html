@@ -1,0 +1,37 @@
+<!-- project_grid.html -->
+<div class="gallery-grid">
+    {% for project in projects %}
+    <div class="gallery-item" 
+         data-category="{{ project.category.slug }}" 
+         data-project-id="{{ project.id }}">
+
+        <div class="item-inner">
+            {% if project.video %}
+                {% include 'partials/videoplayer.html' with project=project %}
+            {% else %}
+                <img 
+                    src="{{ project.image.url }}" 
+                    alt="{{ project.title }}" 
+                    loading="lazy"
+                />
+            {% endif %}
+   <div class="item-overlay">
+    <div class="item-content">
+        <h3>{{ project.title }}</h3>
+        <p class="description">{{ project.description }}</p>
+        <div class="item-category">
+            <span>{{ project.category.name }}</span>
+        </div>
+        <div class="item-meta">
+            <span class="date">
+                {{ project.created_date|date:"M Y" }}
+            </span>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+

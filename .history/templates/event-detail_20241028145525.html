@@ -1,0 +1,220 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="{% static 'css/global.css' %}">
+      <link rel="stylesheet" href="{% static 'css/event-detail.css' %}">
+</head>
+
+
+
+<body>
+<div class="event-detail-page">
+    <div class="event-hero" style="background-image: url('{{ event.image.url }}')">
+        <div class="overlay"></div>
+        <div class="container">
+            <h1>{{ event.title }}</h1>
+        </div>
+    </div>
+
+    <div class="event-content">
+        <div class="event-info">
+            <div class="event-meta">
+                <div class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ event.date|date:"l, F j, Y" }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ event.venue }}</span>
+                </div>
+            </div>
+
+            <div class="event-description">
+                {{ event.description|linebreaks }}
+            </div>
+
+            {% if not event.is_sold_out %}
+            <div class="payment-section">
+                <h2>Book Your Ticket</h2>
+                
+                <div class="ticket-types">
+                    {% for ticket_type in event.ticket_types.all %}
+                    <div class="ticket-type-card {% if ticket_type.is_sold_out %}sold-out{% endif %}">
+                        <div class="ticket-info">
+                            <h3>{{ ticket_type.name }}</h3>
+                            <p class="ticket-description">{{ ticket_type.description }}</p>
+                            <p class="ticket-price">KES {{ ticket_type.price|floatformat:2 }}</p>
+                            <p class="tickets-left">{{ ticket_type.available_tickets }} tickets remaining</p>
+                        </div>
+                        {% if not ticket_type.is_sold_out %}
+                        <div class="ticket-counter">
+                            <button type="button" onclick="decrementTickets('{{ ticket_type.id }}')" aria-label="Decrease quantity">-</button>
+                            <input type="number" 
+                                   id="quantity-{{ ticket_type.id }}" 
+                                   value="0" 
+                                   min="0" 
+                                   max="{{ ticket_type.available_tickets }}" 
+                                   data-price="{{ ticket_type.price }}"
+                                   readonly>
+                            <button type="button" onclick="incrementTickets('{{ ticket_type.id }}')" aria-label="Increase quantity">+</button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div id="orderDetails"></div>
+                    <div class="total-amount">
+                        Total: KES <span id="totalAmount">0.00</span>
+                    </div>
+                </div>
+
+                <div class="mpesa-section">
+                    <h3>Pay via M-PESA</h3>
+                    <form id="mpesaForm" class="mpesa-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="phone">M-PESA Phone Number</label>
+                            <input type="tel" 
+                                   id="phone" 
+                                   name="phone" 
+                                   pattern="254[0-9]{9}"
+                                   placeholder="254700000000" 
+                                   required>
+                            <small class="form-hint">Format: 254XXXXXXXXX</small>
+                        </div>
+                        <div class="mpesa-instructions">
+                            <p>1. Enter your M-PESA registered phone number</p>
+                            <p>2. You will receive a prompt on your phone</p>
+                            <p>3. Enter your M-PESA PIN to complete the payment</p>
+                        </div>
+                        <button type="submit" class="pay-button" id="payButton" disabled>
+                            <span class="button-text">Pay KES <span id="payAmount">0.00</span></span>
+                            <span class="button-loader" style="display: none;">Processing...</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="sold-out-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <h2>Sold Out</h2>
+                <p>Sorry, this event is sold out.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function updateTotalAmount() {
+    let total = 0;
+    let orderDetails = '';
+    
+    document.querySelectorAll('[id^="quantity-"]').forEach(input => {
+        const quantity = parseInt(input.value);
+        if (quantity > 0) {
+            const price = parseFloat(input.dataset.price);
+            const subtotal = quantity * price;
+            const ticketName = input.closest('.ticket-type-card').querySelector('h3').textContent;
+            
+            total += subtotal;
+            orderDetails += `
+                <div class="order-item">
+                    <span>${quantity}x ${ticketName}</span>
+                    <span>KES ${subtotal.toFixed(2)}</span>
+                </div>
+            `;
+        }
+    });
+    
+    document.getElementById('orderDetails').innerHTML = orderDetails;
+    document.getElementById('totalAmount').textContent = total.toFixed(2);
+    document.getElementById('payAmount').textContent = total.toFixed(2);
+    
+    // Enable/disable pay button based on total
+    document.getElementById('payButton').disabled = total <= 0;
+}
+
+function incrementTickets(ticketTypeId) {
+    const input = document.getElementById(`quantity-${ticketTypeId}`);
+    if (parseInt(input.value) < parseInt(input.max)) {
+        input.value = parseInt(input.value) + 1;
+        updateTotalAmount();
+    }
+}
+
+function decrementTickets(ticketTypeId) {
+    const input = document.getElementById(`quantity-${ticketTypeId}`);
+    if (parseInt(input.value) > parseInt(input.min)) {
+        input.value = parseInt(input.value) - 1;
+        updateTotalAmount();
+    }
+}
+
+// Initialize form submission handler
+document.getElementById('mpesaForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const button = document.getElementById('payButton');
+    const buttonText = button.querySelector('.button-text');
+    const buttonLoader = button.querySelector('.button-loader');
+    
+    // Collect ticket quantities
+    const tickets = {};
+    document.querySelectorAll('[id^="quantity-"]').forEach(input => {
+        const quantity = parseInt(input.value);
+        if (quantity > 0) {
+            tickets[input.id.replace('quantity-', '')] = quantity;
+        }
+    });
+    
+    try {
+        button.disabled = true;
+        buttonText.style.display = 'none';
+        buttonLoader.style.display = 'inline-block';
+        
+        const response = await fetch('/api/mpesa/initiate/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                phone_number: document.getElementById('phone').value,
+                tickets: tickets
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            alert('Please check your phone for the STK push prompt');
+        } else {
+            alert('Payment initiation failed: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while processing your payment');
+    } finally {
+        button.disabled = false;
+        buttonText.style.display = 'inline-block';
+        buttonLoader.style.display = 'none';
+    }
+});
+</script>
+</body>
+</html>

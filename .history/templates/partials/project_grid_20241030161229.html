@@ -1,0 +1,113 @@
+{% for project in projects %}
+<div class="gallery-item" data-category="{{ project.category.slug }}" data-project-id="{{ project.id }}">
+    <div class="item-inner">
+        {% if project.video %}
+            <video poster="{{ project.video_thumbnail.url }}" preload="none">
+                <source src="{{ project.video.url }}" type="video/mp4">
+            </video>
+            <div class="play-button">
+                <i class="fas fa-play"></i>
+            </div>
+        {% else %}
+            <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy">
+        {% endif %}
+        <div class="item-overlay">
+            <div class="item-content">
+                <h3>{{ project.title }}</h3>
+                <p>{{ project.description|truncatewords:20 }}</p>
+                <div class="item-tags">
+                    <span>{{ project.category.name }}</span>
+                    {% for tool in project.tools.all|slice:":2" %}
+                        <span>{{ tool.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const gallery = document.querySelector('.gallery');
+    let currentPage = 1;
+    let loading = false;
+    
+    // View toggle functionality
+    document.querySelectorAll('.toggle-btn').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            document.querySelectorAll('.toggle-btn').forEach(t => t.classList.remove('active'));
+            toggle.classList.add('active');
+            gallery.className = `gallery ${toggle.dataset.view}-view`;
+        });
+    });
+
+    // Filter functionality
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (loading) return;
+            loading = true;
+            
+            const filter = btn.dataset.filter;
+            
+            fetch(`/projects/?category=${filter}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                gallery.innerHTML = data.html;
+                currentPage = 1;
+                
+                // Update URL and button states
+                history.pushState({}, '', `?category=${filter}`);
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            })
+            .finally(() => {
+                loading = false;
+            });
+        });
+    });
+
+    // Infinite scroll
+    const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && !loading) {
+            loadMoreProjects();
+        }
+    });
+
+    // Observe last item
+    const observeLastItem = () => {
+        const items = document.querySelectorAll('.gallery-item');
+        if (items.length) {
+            observer.observe(items[items.length - 1]);
+        }
+    };
+
+    // Load more projects
+    const loadMoreProjects = () => {
+        if (loading) return;
+        loading = true;
+
+        const category = new URLSearchParams(window.location.search).get('category') || 'all';
+        
+        fetch(`/projects/load-more/?page=${currentPage + 1}&category=${category}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.html) {
+                    gallery.insertAdjacentHTML('beforeend', data.html);
+                    currentPage++;
+                    observeLastItem();
+                }
+            })
+            .finally(() => {
+                loading = false;
+            });
+    };
+
+    // Initial observer setup
+    observeLastItem();
+});
+</script>

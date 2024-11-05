@@ -1,0 +1,71 @@
+<!-- portfolio.html -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/work.css' %}">
+
+<section id="portfolio" class="portfolio-section">
+    <div class="portfolio-header">
+        <h2 class="portfolio-title">My Creative Journey</h2>
+        <p class="portfolio-subtitle">Exploring the intersection of art and technology</p>
+    </div>
+    
+    <div class="filter-container">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">
+                <span class="btn-text">All Work</span>
+                <span class="btn-bg"></span>
+            </button>
+            <button class="filter-btn" data-filter="2d">
+                <span class="btn-text">2D Art</span>
+                <span class="btn-bg"></span>
+            </button>
+            <button class="filter-btn" data-filter="3d">
+                <span class="btn-text">3D Art</span>
+                <span class="btn-bg"></span>
+            </button>
+            <button class="filter-btn" data-filter="modeling">
+                <span class="btn-text">Modeling</span>
+                <span class="btn-bg"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="portfolio-grid">
+        <div class="portfolio-item" data-category="2d">
+            <div class="portfolio-card">
+                <div class="portfolio-image">
+                    <img src="{% static 'images/susan.jpg' %}" alt="Digital Painting">
+                </div>
+                <div class="portfolio-overlay">
+                    <div class="overlay-content">
+                        <span class="category">2D Art</span>
+                        <h3>Fantasy Landscape</h3>
+                        <p>Digital Painting, 2024</p>
+                        <button class="view-project"><a href="{% url 'projects' %}"></a>View Projects</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Add more portfolio items as needed -->
+    </div>
+
+    <!-- Lightbox -->
+    <div class="portfolio-lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" aria-label="Close lightbox">&times;</button>
+            <div class="lightbox-image-container">
+                <img src="" alt="Project Preview">
+            </div>
+            <div class="lightbox-details">
+                <h3 class="lightbox-title"></h3>
+                <p class="lightbox-description"></p>
+                <div class="lightbox-metadata">
+                    <span class="metadata-date"></span>
+                    <span class="metadata-category"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="{% static 'javascript/work.js' %}"></script>
+
+

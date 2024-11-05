@@ -1,0 +1,97 @@
+.alert-container {
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    z-index: 1050;
+    max-width: 350px;
+}
+
+.alert {
+    position: relative;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    animation: slideIn 0.5s ease-in-out;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.alert.show {
+    opacity: 1;
+}
+
+.alert.hiding {
+    opacity: 0;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-dismissible {
+    padding-right: 3rem;
+}
+
+.btn-close {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: currentColor;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+.fade {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.fade.show {
+    opacity: 1;
+}
+/* Add these to your existing alert-messages.css */
+.error-message {
+    color: #721c24;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.input-error {
+    border-color: #dc3545 !important;
+}
+
+button[type="submit"]:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}

@@ -1,0 +1,35 @@
+<!-- templates/partials/video_player.html -->
+<div class="custom-video-player" data-video-id="{{ project.id }}">
+    <video preload="metadata" poster="{{ project.video_thumbnail.url }}" playsinline>
+        <source src="{{ project.video.url }}" type="{{ project.video_format|default:'video/mp4' }}">
+        <source src="{{ project.video.url|slice:':-4' }}.webm" type="video/webm">
+        Your browser doesn't support video playback.
+    </video>
+    
+    <div class="video-controls">
+        <button class="play-pause">
+            <i class="fas fa-play"></i>
+        </button>
+        
+        <div class="progress-bar">
+            <div class="progress-bar-filled"></div>
+        </div>
+        
+        <div class="time">
+            <span class="current-time">0:00</span>
+            <span>/</span>
+            <span class="duration">0:00</span>
+        </div>
+        
+        <div class="volume-control">
+            <button class="mute-unmute">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="1">
+        </div>
+        
+        <button class="fullscreen">
+            <i class="fas fa-expand"></i>
+        </button>
+    </div>
+</div>

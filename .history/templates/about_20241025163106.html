@@ -1,0 +1,288 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Susan Abong'o</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .about-hero {
+            height: 60vh;
+            margin-top: 60px;
+            position: relative;
+            color: white;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .about-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .profile-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .profile-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, var(--accent), transparent);
+            opacity: 0.3;
+        }
+
+        .biography {
+            margin-top: -10vh;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .timeline {
+            margin: 4rem 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            margin: 2rem 0;
+            position: relative;
+            width: 50%;
+            padding: 0 2rem;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            top: 0;
+        }
+
+        .timeline-item:nth-child(odd)::before {
+            right: -8px;
+        }
+
+        .timeline-item:nth-child(even)::before {
+            left: -8px;
+        }
+
+        .skills {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+            background: var(--light);
+        }
+
+        .skill-category {
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .skill-bar {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--gradient);
+            width: 0;
+            transition: width 1s ease;
+        }
+
+        @media (max-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .timeline::before {
+                left: 0;
+            }
+
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                text-align: left !important;
+                padding-left: 2rem;
+            }
+
+            .timeline-item::before {
+                left: -8px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <!-- Same navigation as before -->
+    </nav>
+
+    <section class="about-hero">
+        <div class="about-content">
+            <div class="profile-image animate-fade-up">
+                <img src="/api/placeholder/600/800" alt="Susan Abong'o">
+            </div>
+            <div class="animate-slide-in">
+                <h1>About Me</h1>
+                <p>Digital artist, model, and event host based in Nairobi, Kenya</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="biography">
+        <div class="animate-fade-up">
+            <h2 class="section-title">My Story</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae eros quis nisi pulvinar tempor. 
+               Suspendisse potenti. Vivamus eget justo sit amet nisi varius tincidunt.</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item animate-slide-in">
+                <h3>2024</h3>
+                <p>Lead 3D Artist at Creative Studios</p>
+            </div>
+            <div class="timeline-item animate-slide-in">
+                <h3>2023</h3>
+                <p>Featured Artist at Nairobi Art Week</p>
+            </div>
+            <div class="timeline-item animate-slide-in">
+                <h3>2022</h3>
+                <p>Started Event Hosting Career</p>
+            </div>
+            <div class="timeline-item animate-slide-in">
+                <h3>2021</h3>
+                <p>Graduated with Honors in Digital Arts</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="skills">
+        <div class="skill-category animate-fade-up">
+            <h3>2D Art</h3>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="90"></div>
+            </div>
+            <p>Digital Painting</p>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="85"></div>
+            </div>
+            <p>Character Design</p>
+        </div>
+
+        <div class="skill-category animate-fade-up">
+            <h3>3D Art</h3>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="95"></div>
+            </div>
+            <p>3D Modeling</p>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="80"></div>
+            </div>
+            <p>Animation</p>
+        </div>
+
+        <div class="skill-category animate-fade-up">
+            <h3>Event Hosting</h3>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="95"></div>
+            </div>
+            <p>Public Speaking</p>
+            <div class="skill-bar">
+                <div class="skill-progress" data-progress="90"></div>
+            </div>
+            <p>Event Management</p>
+        </div>
+    </section>
+
+    <script>
+        // Animation observer (same as before)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    
+                    // Animate skill bars if they exist
+                    const skillBars = entry.target.querySelectorAll('.skill-progress');
+                    skillBars.forEach(bar => {
+                        const progress = bar.dataset.progress;
+                        bar.style.width = `${progress}%`;
+                    });
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.animate-fade-up, .animate-slide-in, .skill-category').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

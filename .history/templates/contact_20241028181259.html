@@ -1,0 +1,102 @@
+{% extends 'index.html' %}
+
+{% load static %}
+
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+    <h2 class="contact-section-title">Contact Information</h2>
+    <div class="contact-wrapper">
+     {% if messages %}
+        {% include "alert-messages.html" %}
+    {% endif %}
+
+        <div class="contact-info contact-animate-slide">
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div>
+                    <h3>Phone</h3>
+                    <p>+254 XXX XXX XXX</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                    <h3>Email</h3>
+                    <p>contact@susanabongo.com</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                    <h3>Location</h3>
+                    <p>Nairobi, Kenya</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <h3>Business Hours</h3>
+                    <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form contact-animate-fade">
+            <h2 class="contact-section-title">Send a Message</h2>
+    <form method="POST" action="{% url 'send_contact_email' %}">
+                {% csrf_token %}
+                
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" value="{{ form.name.value|default:'' }}" required>
+                    {% if form.name.errors %}
+                        <div class="error-message">{{ form.name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" value="{{ form.email.value|default:'' }}" required>
+                    {% if form.email.errors %}
+                        <div class="error-message">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <label for="service">Service Type</label>
+                    <select id="service" name="service" required>
+                        <option value="" {% if not form.service.value %}selected{% endif %}>Select a service</option>
+                        <option value="art" {% if form.service.value == 'art' %}selected{% endif %}>Animation Services</option>
+                        <option value="modeling" {% if form.service.value == 'modeling' %}selected{% endif %}>Modeling Services</option>
+                    </select>
+                    {% if form.service.errors %}
+                        <div class="error-message">{{ form.service.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="input-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="5" required>{{ form.message.value|default:'' }}</textarea>
+                    {% if form.message.errors %}
+                        <div class="error-message">{{ form.message.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+

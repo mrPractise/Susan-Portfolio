@@ -1,0 +1,75 @@
+<!-- projects.html -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/projects.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+
+
+<div class="projects-container">
+    <header class="projects-header">
+        <div class="header-content">
+            <h1 class="projects-title">Project Gallery</h1>
+            <p class="projects-subtitle">A showcase of my creative work and artistic journey</p>
+        </div>
+        
+        <div class="gallery-controls">
+            <div class="view-toggle">
+                <button class="toggle-btn active" data-view="grid">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="toggle-btn" data-view="masonry">
+                    <i class="fas fa-columns"></i>
+                </button>
+            </div>
+            
+            <div class="filter-wrapper">
+                <button class="filter-btn active" data-filter="all">All</button>
+                {% for category in categories %}
+                <button class="filter-btn" data-filter="{{ category.slug }}">
+                    {{ category.name }}
+                </button>
+                {% endfor %}
+            </div>
+        </div>
+    </header>
+
+    <div class="gallery-container">
+        <div class="gallery grid-view">
+            {% for project in projects %}
+            <div class="gallery-item" data-category="{{ project.category.slug }}">
+                <div class="item-inner">
+                    {% if project.video %}
+                        <video poster="{{ project.video_thumbnail.url }}">
+                            <source src="{{ project.video.url }}" type="video/mp4">
+                        </video>
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    {% else %}
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                    {% endif %}
+                    <div class="item-overlay">
+                        <div class="item-content">
+                            <h3>{{ project.title }}</h3>
+                            <p>{{ project.description|truncatewords:20 }}</p>
+                            <div class="item-tags">
+                                <span>{{ project.category.name }}</span>
+                                {% for tool in project.tools.all|slice:":2" %}
+                                    <span>{{ tool.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="{% static 'javascript/projects.js' %}"></script>
+

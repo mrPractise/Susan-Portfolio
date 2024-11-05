@@ -1,0 +1,401 @@
+/* projects.css */
+:root {
+    --primary: #2D3250;
+    --accent: #7077A1;
+    --background: #F6F6F6;
+    --text: #424769;
+    --gradient: linear-gradient(135deg, #2D3250, #7077A1);
+}
+
+.projects-container {
+    min-height: 100vh;
+    background: var(--background);
+    padding: 2rem;
+}
+
+.projects-header {
+    max-width: 1400px;
+    margin: 0 auto 4rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.projects-title {
+    font-size: 3.5rem;
+    background: var(--gradient);
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+}
+
+.projects-subtitle {
+    color: var(--text);
+    font-size: 1.2rem;
+}
+
+.gallery-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+
+
+.filter-wrapper {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    background: var(--background);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+    background: var(--gradient);
+    color: white;
+}
+
+.gallery-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+
+.gallery.masonry-view {
+    display: block;
+    columns: 3;
+    column-gap: 2rem;
+}
+
+
+
+.gallery-item {
+    break-inside: avoid;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.item-inner {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.item-inner:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.gallery-item img,
+.gallery-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.item-inner:hover img,
+.item-inner:hover video {
+    transform: scale(1.1);
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.play-button i {
+    color: var(--primary);
+    font-size: 1.5rem;
+}
+
+.item-overlay {
+    position: relative;
+    background: white;
+    padding: 1.5rem;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.item-content {
+    color: var(--text); /* Changed from white */
+    width: 100%;
+}
+
+.item-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+    word-break: break-word; /* Break long words in title */
+    overflow-wrap: break-word;
+}
+.item-content p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 1rem;
+    color: var(--text);
+    /* Add these properties for text wrapping */
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line; /* Preserve line breaks but wrap text */
+    max-width: 100%; /* Ensure text stays within container */
+}
+.item-category span {
+    padding: 0.3rem 0.8rem;
+    background: var(--background);
+    border-radius: 15px;
+    font-size: 0.8rem;
+    color: var(--text);
+    /* Add for long category names */
+    word-break: break-word;
+    max-width: 100%;
+    display: inline-block;
+}
+
+.item-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.item-inner:hover .item-overlay {
+    opacity: 1;
+}
+
+
+.item-tags span {
+    padding: 0.3rem 0.8rem;
+    background: var(--background);
+    border-radius: 15px;
+    font-size: 0.8rem;
+    color: var(--text);
+}
+.project-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.project-modal.active .modal-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.modal-media {
+    background: black;
+}
+
+.modal-media img,
+.modal-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.modal-details {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.modal-nav.prev {
+    left: 1rem;
+}
+
+.modal-nav.next {
+    right: 1rem;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.video-controls {
+    opacity: 1;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+}
+.video-controls .play-pause {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-controls .play-pause:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+
+/* Only showing the modified/new parts that affect the video layout */
+@media (min-width: 1024px) {
+    .gallery {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .item-inner {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        min-height: 500px;
+    }
+
+    .custom-video-player {
+        height: 100%;
+        width: 100%;
+    }
+
+    .video-container {
+        height: 100%;
+        padding-top: 0 !important;
+    }
+        .video-container video {
+        object-fit: cover; /* This will ensure the video fills the container */
+    }
+
+    .item-overlay {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 2.5rem;
+        background: white;
+    }
+       /* Optional: Add some max-width to prevent text from stretching too wide */
+    .item-content {
+        max-width: 500px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .item-inner {
+        grid-template-columns: 3fr 2fr;
+        min-height: 400px;
+    }
+
+    .custom-video-player {
+        height: 100%;
+    }
+
+    .video-container {
+        height: 100%;
+        padding-top: 0 !important;
+    }
+}
+
+@media (max-width: 767px) {
+     .item-content p {
+        font-size: 0.85rem;
+    }
+      .item-overlay {
+        padding: 1rem;
+    }
+    .item-inner {
+        display: block;
+    }
+
+    .video-container {
+        padding-top: 56.25%; /* Restore aspect ratio for mobile */
+    }
+}

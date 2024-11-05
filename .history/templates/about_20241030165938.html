@@ -1,0 +1,130 @@
+<!-- about.html -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<section id="about" class="about-section">
+  <div class="about-background"></div>
+
+  <div class="about-container">
+    <div class="section-header">
+      <h2 class="section-title">About Me</h2>
+      <div class="title-decoration">
+        <span class="line"></span>
+        <span class="dot"></span>
+        <span class="line"></span>
+      </div>
+    </div>
+
+    <div class="about-content">
+      <div class="profile-showcase">
+        <div class="profile-card">
+          <div class="card-inner">
+            <div class="card-front">
+              <img src="{% static 'images/susan.jpg' %}" alt="Susan Abong'o" />
+              <div class="image-overlay"></div>
+            </div>
+            <div class="card-back">
+              <div class="skills-container">
+                <div class="skill-item">
+                  <span class="skill-label">2D Art</span>
+                  <div class="skill-bar" data-percentage="90">
+                    <div class="skill-progress"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <span class="skill-label">3D Modeling</span>
+                  <div class="skill-bar" data-percentage="85">
+                    <div class="skill-progress"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <span class="skill-label">Animation</span>
+                  <div class="skill-bar" data-percentage="80">
+                    <div class="skill-progress"></div>
+                  </div>
+                </div>
+                <div class="skill-item">
+                  <span class="skill-label">Event Hosting</span>
+                  <div class="skill-bar" data-percentage="95">
+                    <div class="skill-progress"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Update the profile-stats section -->
+        <div class="profile-stats">
+          <div class="stat-item">
+            <i class="fas fa-clock stat-icon"></i>
+            <span class="stat-number">5+</span>
+            <span class="stat-label">Years Experience</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-project-diagram stat-icon"></i>
+            <span class="stat-number">50+</span>
+            <span class="stat-label">Projects</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-microphone-alt stat-icon"></i>
+            <span class="stat-number">30+</span>
+            <span class="stat-label">Events Hosted</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-journey">
+        <div class="journey-intro">
+          <p class="intro-text">
+            Digital artist, model, and event host based in Nairobi, Kenya.
+            Specializing in 2D/3D art and animation.
+          </p>
+        </div>
+
+        <div class="journey-timeline">
+          <div class="timeline-track"></div>
+          <div class="timeline-items">
+            <div class="timeline-item" data-year="2024">
+              <div class="item-content">
+                <div class="item-marker"></div>
+                <h3>Animated Short Films</h3>
+                <p>
+                  Created and directed multiple animated short films, pushing
+                  the boundaries of digital storytelling.
+                </p>
+              </div>
+            </div>
+            <div class="timeline-item" data-year="2023">
+              <div class="item-content">
+                <div class="item-marker"></div>
+                <h3>3D Modeling Mastery</h3>
+                <p>
+                  Completed advanced 3D modeling certification, specializing in
+                  character and environment design.
+                </p>
+              </div>
+            </div>
+            <div class="timeline-item" data-year="2022">
+              <div class="item-content">
+                <div class="item-marker"></div>
+                <h3>Event Hosting</h3>
+                <p>
+                  Hosted major cultural and entertainment events across Nairobi.
+                </p>
+              </div>
+            </div>
+            <div class="timeline-item" data-year="2021">
+              <div class="item-content">
+                <div class="item-marker"></div>
+                <h3>Digital Art Foundation</h3>
+                <p>Mastered 2D digital art techniques and fundamentals.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'javascript/about.js' %}"></script>

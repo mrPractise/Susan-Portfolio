@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Susan Abong'o - Artist & Event Host</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+ 
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-content">
+            <a href="index.html" class="logo">Susan Abong'o</a>
+            <button class="hamburger">☰</button>
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'portfolio_list' %}">Portfolio</a>
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'works' %}">Other Works</a>
+                <a href="{% url 'testimonials' %}">Testimonials</a>
+                <a href="{% url 'contact' %}">Contact</a>
+                <a href="{% url 'events_list' %}">Events</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Susan Abong'o</h1>
+            <p>2D/3D Artist | Model | Event Host</p>
+            <p>Creating visual stories that captivate and inspire</p>
+            <a href="portfolio.html" class="btn btn-primary">Explore My Work</a>
+        </div>
+    </section>
+
+    <section class="featured-works">
+        <div class="works-grid">
+            <div class="work-item animate-fade-up" style="animation-delay: 0.3s;">
+                <img src="/api/placeholder/400/300" alt="2D Artwork">
+                <div class="work-overlay">
+                    <h3>Digital Illustration</h3>
+                    <p>2D Art Collection</p>
+                </div>
+            </div>
+            <div class="work-item animate-fade-up" style="animation-delay: 0.5s;">
+                <img src="/api/placeholder/400/300" alt="3D Artwork">
+                <div class="work-overlay">
+                    <h3>3D Character</h3>
+                    <p>Character Design</p>
+                </div>
+            </div>
+            <div class="work-item animate-fade-up" style="animation-delay: 0.7s;">
+                <img src="/api/placeholder/400/300" alt="Event Hosting">
+                <div class="work-overlay">
+                    <h3>Event Hosting</h3>
+                    <p>Professional MC</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="quick-links">
+        <div class="quick-links-grid">
+            <div class="quick-link animate-scale-in" style="animation-delay: 0.3s;">
+                <i class="fas fa-paint-brush"></i>
+                <h3>Art Services</h3>
+                <p>Custom artwork and illustrations</p>
+                <a href="portfolio.html" class="btn btn-outline">View Portfolio</a>
+            </div>
+            <div class="quick-link animate-scale-in" style="animation-delay: 0.5s;">
+                <i class="fas fa-microphone"></i>
+                <h3>Event Hosting</h3>
+                <p>Professional MC services</p>
+                <a href="events.html" class="btn btn-outline">Book Now</a>
+            </div>
+            <div class="quick-link animate-scale-in" style="animation-delay: 0.7s;">
+                <i class="fas fa-camera"></i>
+                <h3>Modeling</h3>
+                <p>Professional modeling services</p>
+                <a href="works.html" class="btn btn-outline">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Navigation Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: "0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.animate-fade-up, .animate-scale-in').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

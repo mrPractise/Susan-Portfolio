@@ -1,0 +1,253 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="{% static 'css/global.css' %}">
+      <link rel="stylesheet" href="{% static 'css/events.css' %}">
+</head>
+
+
+<body>
+
+
+<header class="events-hero">
+    <div class="container animate-fade-up">
+        <h1>Upcoming Events</h1>
+    </div>
+</header>
+
+<nav class="events-nav">
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="#calendar" class="active">Calendar</a></li>
+        <li><a href="#upcoming">Upcoming Events</a></li>
+    </ul>
+</nav>
+
+<section id="calendar" class="calendar-section">
+    <div class="calendar-container animate-fade-up">
+        <div class="calendar-header">
+            <button id="prevMonth">&lt; Previous</button>
+            <h2>{{ month_name }} {{ year }}</h2>
+            <button id="nextMonth">Next &gt;</button>
+        </div>
+        <div class="calendar-grid">
+            {% for week in calendar_data %}
+                {% for day in week %}
+                    <div class="calendar-day {% if day.events %}has-event{% endif %}">
+                        {% if day.day != 0 %}
+                            {{ day.day }}
+                            {% if day.events %}
+                                {% for event in day.events %}
+                                    <div class="event-dot" title="{{ event.title }}"></div>
+                                    <div class="event-popup">{{ event.title }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="upcoming" class="upcoming-events">
+    <h2 class="section-title">Upcoming Events</h2>
+    
+    <div class="events-grid">
+        {% for event in events %}
+      <div class="event-card animate-fade-up">
+    <div class="event-image">
+        {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}">
+        {% else %}
+            <img src="{% static 'images/default-event.jpg' %}" alt="{{ event.title }}">
+        {% endif %}
+        <div class="event-date-badge">{{ event.date|date:"M d" }}</div>
+        <div class="share-button" onclick="toggleShareMenu(this)">
+            <i class="fas fa-share-alt"></i>
+        </div>
+        <div class="share-menu">
+            <!-- Share menu items -->
+                <a href="#" class="share-menu-item" data-platform="whatsapp" data-title="{{ event.title }}" data-description="{{ event.description }}">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+        </div>
+    </div>
+    <div class="event-details">
+        <h3>{{ event.title }}</h3>
+        <div class="event-meta">
+            <span><i class="fas fa-map-marker-alt"></i> {{ event.venue }}</span>
+            <span><i class="fas fa-clock"></i> {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</span>
+        </div>
+        <div class="event-description">
+            <p>{{ event.description }}</p>
+        </div>
+        <a href="{% url 'event-detail' event.id %}" class="btn btn-primary">Book Tickets</a>
+    </div>
+</div>
+        {% endfor %}
+    </div>
+</section>
+
+
+
+
+
+    <script>
+// Calendar navigation and event handling
+document.addEventListener('DOMContentLoaded', function() {
+    let currentDate = new Date();
+
+    // Calendar navigation
+    document.getElementById('prevMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        fetchCalendarData();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        fetchCalendarData();
+    });
+
+    // Fetch calendar data from backend
+    function fetchCalendarData() {
+        fetch(`/events/calendar-data/?year=${currentDate.getFullYear()}&month=${currentDate.getMonth() + 1}`)
+            .then(response => response.json())
+            .then(data => {
+                updateCalendar(data);
+            });
+    }
+
+    // Update calendar UI
+    function updateCalendar(data) {
+        document.querySelector('.calendar-header h2').textContent = `${data.month_name} ${data.year}`;
+        const calendarGrid = document.querySelector('.calendar-grid');
+        calendarGrid.innerHTML = '';
+
+        data.calendar_data.forEach(week => {
+            week.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                if (day.day !== 0) {
+                    dayElement.textContent = day.day;
+                    
+                    if (day.events.length > 0) {
+                        dayElement.classList.add('has-event');
+                        // Add event dots and tooltips
+                        day.events.forEach(event => {
+                            const dot = document.createElement('div');
+                            dot.className = 'event-dot';
+                            dot.title = event.title;
+                            
+                            // Make the day clickable to go to event
+                            dayElement.style.cursor = 'pointer';
+                            dayElement.addEventListener('click', () => {
+                                window.location.href = `/events/event/${event.id}/`;
+                            });
+                            
+                            dayElement.appendChild(dot);
+                        });
+                    }
+                }
+                
+                calendarGrid.appendChild(dayElement);
+            });
+        });
+    }
+});
+
+// Share functionality
+function toggleShareMenu(button) {
+    event.stopPropagation();
+    const menu = button.nextElementSibling;
+    const overlay = document.getElementById('shareOverlay');
+    
+    // Close any open share menus
+    document.querySelectorAll('.share-menu.active').forEach(m => {
+        if (m !== menu) m.classList.remove('active');
+    });
+
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
+
+// Add click handlers for share menu items
+document.querySelectorAll('.share-menu-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const platform = this.dataset.platform;
+        const title = this.dataset.title;
+        const description = this.dataset.description;
+        
+        switch(platform) {
+            case 'whatsapp':
+                shareToWhatsApp(title, description);
+                break;
+            case 'facebook':
+                shareToFacebook(title, description);
+                break;
+            case 'twitter':
+                shareToTwitter(title, description);
+                break;
+            case 'linkedin':
+                shareToLinkedIn(title, description);
+                break;
+            case 'email':
+                shareViaEmail(title, description);
+                break;
+        }
+        
+        // Close menu after sharing
+        setTimeout(() => {
+            document.querySelectorAll('.share-menu.active').forEach(menu => menu.classList.remove('active'));
+            document.getElementById('shareOverlay').classList.remove('active');
+        }, 100);
+    });
+});
+
+// Sharing functions
+function shareToWhatsApp(title, description) {
+    const text = `${title}\n${description}\n${window.location.href}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function shareToFacebook(title, description) {
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank');
+}
+
+function shareToTwitter(title, description) {
+    const text = `${title}\n${description}`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank');
+}
+
+function shareToLinkedIn(title, description) {
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank');
+}
+
+function shareViaEmail(title, description) {
+    const subject = encodeURIComponent(title);
+    const body = encodeURIComponent(`${description}\n\nMore info: ${window.location.href}`);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+// Close overlay when clicking outside
+document.getElementById('shareOverlay').addEventListener('click', function() {
+    document.querySelectorAll('.share-menu.active').forEach(menu => menu.classList.remove('active'));
+    this.classList.remove('active');
+});
+    </script>
+</body>
+</html>

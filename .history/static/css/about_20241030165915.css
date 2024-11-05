@@ -1,0 +1,347 @@
+
+/* about.css */
+.about-section {
+    padding: 8rem 2rem;
+    position: relative;
+    background: var(--background);
+    overflow: hidden;
+}
+
+.about-background {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(112, 119, 161, 0.1), transparent);
+}
+
+.about-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.section-title {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.title-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.line {
+    width: 50px;
+    height: 2px;
+    background: var(--gradient);
+    opacity: 0;
+    transform: scaleX(0);
+    animation: expandLine 0.8s ease forwards 0.4s;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gradient);
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards 0.6s;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+.profile-showcase {
+    position: sticky;
+    top: 100px;
+}
+
+.profile-card {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    perspective: 1000px;
+    margin-bottom: 3rem;
+}
+.stat-icon {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+    transition: transform 0.3s ease;
+}
+
+.stat-item:hover .stat-icon {
+    transform: scale(1.2);
+}
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-card:hover .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.card-front {
+    background: white;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.card-front img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+}
+
+.card-back {
+    background: white;
+    transform: rotateY(180deg);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.skills-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.skill-item {
+    margin-bottom: 1rem;
+}
+
+.skill-label {
+    display: block;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.skill-bar {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.skill-progress {
+    height: 100%;
+    background: var(--gradient);
+    transform-origin: left;
+    transform: scaleX(0);
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.stat-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.journey-intro {
+    margin-bottom: 4rem;
+}
+
+.intro-text {
+    font-size: 1.4rem;
+    line-height: 1.8;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease forwards 0.8s;
+}
+
+.journey-timeline {
+    position: relative;
+    padding-left: 3rem;
+}
+
+.timeline-track {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.timeline-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.timeline-item {
+    position: relative;
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+.timeline-item.visible {
+    animation: fadeInRight 0.8s ease forwards;
+}
+
+.item-marker {
+    position: absolute;
+    left: -3.5rem;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--gradient);
+    box-shadow: 0 0 0 5px rgba(112, 119, 161, 0.2);
+}
+
+.item-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.timeline-item[data-year]::before {
+    content: attr(data-year);
+    position: absolute;
+    left: -8rem;
+    top: 0;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInRight {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes expandLine {
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+@media (max-width: 1024px) {
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+
+    .profile-showcase {
+        position: relative;
+        top: 0;
+    }
+
+    .timeline-item[data-year]::before {
+        left: -5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-section {
+        padding: 6rem 1rem;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+    }
+
+    .profile-card {
+        height: 400px;
+    }
+
+    .intro-text {
+        font-size: 1.2rem;
+    }
+
+    .journey-timeline {
+        padding-left: 2rem;
+    }
+
+    .timeline-item[data-year]::before {
+        position: relative;
+        left: 0;
+        display: block;
+        margin-bottom: 1rem;
+    }
+}
+

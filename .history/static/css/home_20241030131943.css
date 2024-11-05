@@ -1,0 +1,238 @@
+/* home.css */
+:root {
+    --primary: #2D3250;
+    --accent: #7077A1;
+    --text: #424769;
+    --background: #F6F6F6;
+    --gradient: linear-gradient(135deg, #2D3250, #7077A1);
+}
+
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: var(--background);
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.particle-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.profile-container {
+    margin-top: -6rem;
+}
+
+.profile-frame {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.frame-border {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    animation: rotate 10s linear infinite;
+}
+
+.text-content {
+    text-align: center;
+    max-width: 800px;
+}
+
+.hero-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.title-line {
+    font-size: 4.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.title-line:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.hero-roles {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.role-badge {
+    padding: 0.6rem 1.2rem;
+    background: var(--gradient);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: 0.4s;
+}
+
+.role-badge:nth-child(2) {
+    animation-delay: 0.5s;
+}
+
+.role-badge:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.hero-description {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.8s forwards;
+}
+
+.cta-container {
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 1s forwards;
+}
+
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2.5rem;
+    background: var(--gradient);
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cta-button:hover .cta-icon {
+    transform: translateX(5px);
+}
+
+.cta-icon {
+    transition: transform 0.3s ease;
+}
+
+.social-links {
+    display: flex;
+    gap: 1.5rem;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 1.2s forwards;
+}
+
+.social-link {
+    color: var(--primary);
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    color: var(--accent);
+    transform: translateY(-3px);
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 1.5rem;
+        gap: 2rem;
+    }
+
+    .profile-frame {
+        width: 150px;
+        height: 150px;
+    }
+
+    .title-line {
+        font-size: 3rem;
+    }
+
+    .hero-description {
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+
+    .cta-button {
+        padding: 0.8rem 2rem;
+        font-size: 1.1rem;
+    }
+}

@@ -1,0 +1,223 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Susan Abong'o</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link rel="stylesheet" href="{% static 'contact.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="nav">
+        <!-- Same navigation as before -->
+    </nav>
+
+    <header class="contact-hero">
+        <div class="container animate-fade-up">
+            <h1>Get in Touch</h1>
+            <p>Let's discuss your next project</p>
+        </div>
+    </header>
+
+    <div class="contact-container">
+        <div class="contact-info animate-slide-in">
+            <h2 class="section-title">Contact Information</h2>
+            
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <div>
+                    <h3>Phone</h3>
+                    <p>+254 XXX XXX XXX</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div>
+                    <h3>Email</h3>
+                    <p>contact@susanabongo.com</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div>
+                    <h3>Location</h3>
+                    <p>Nairobi, Kenya</p>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="contact-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div>
+                    <h3>Business Hours</h3>
+                    <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form animate-fade-up">
+            <h2 class="section-title">Send a Message</h2>
+            
+            <form id="contactForm">
+                <div class="input-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="service">Service Type</label>
+                    <select id="service" required>
+                        <option value="">Select a service</option>
+                        <option value="art">Art Commission</option>
+                        <option value="event">Event Hosting</option>
+                        <option value="modeling">Modeling</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MPesa Payment Modal -->
+    <div class="mpesa-modal" id="mpesaModal">
+        <div class="modal-content animate-scale-in">
+            <button class="close-modal">&times;</button>
+            
+            <h2>M-Pesa Payment</h2>
+            
+            <div class="payment-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Enter Phone Number</h3>
+                        <input type="tel" id="phoneNumber" placeholder="254..." pattern="254[0-9]{9}" required>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Enter Amount</h3>
+                        <input type="number" id="amount" placeholder="Amount in KES" min="1" required>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Confirm Payment</h3>
+                        <button class="btn btn-primary" id="initiatePayment">Pay Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="loading-animation" id="loadingAnimation">
+                <div class="spinner"></div>
+                <p>Processing payment...</p>
+                <p>Please check your phone for the STK push</p>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle" style="font-size: 3rem; color: #4CAF50;"></i>
+                <h3>Payment Successful!</h3>
+                <p>Thank you for your payment</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Contact Form Submission
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Here you would typically send the form data to your server
+            alert('Message sent successfully!');
+            e.target.reset();
+        });
+
+        // MPesa Integration
+        const mpesaModal = document.getElementById('mpesaModal');
+        const loadingAnimation = document.getElementById('loadingAnimation');
+        const successMessage = document.getElementById('successMessage');
+
+        // Show Modal
+        function showMpesaModal() {
+            mpesaModal.style.display = 'flex';
+        }
+
+        // Close Modal
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            mpesaModal.style.display = 'none';
+            loadingAnimation.style.display = 'none';
+            successMessage.style.display = 'none';
+        });
+
+        // Handle Payment
+        document.getElementById('initiatePayment').addEventListener('click', () => {
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const amount = document.getElementById('amount').value;
+
+            if (!phoneNumber || !amount) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Show loading animation
+            document.querySelector('.payment-steps').style.display = 'none';
+            loadingAnimation.style.display = 'block';
+
+            // Simulate payment processing
+            setTimeout(() => {
+                loadingAnimation.style.display = 'none';
+                successMessage.style.display = 'block';
+
+                // Close modal after success
+                setTimeout(() => {
+                    mpesaModal.style.display = 'none';
+                    successMessage.style.display = 'none';
+                    document.querySelector('.payment-steps').style.display = 'block';
+                }, 3000);
+            }, 3000);
+        });
+
+        // Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = "1";
+                    entry.target.style.transform = "translateY(0)";
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.animate-fade-up, .animate-slide-in').forEach(el => {
+            el.style.opacity = "0";
+            el.style.transform = "translateY(20px)";
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

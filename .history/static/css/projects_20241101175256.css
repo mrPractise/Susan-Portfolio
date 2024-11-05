@@ -1,0 +1,737 @@
+/* projects.css */
+:root {
+    --primary: #2D3250;
+    --accent: #7077A1;
+    --background: #F6F6F6;
+    --text: #424769;
+    --gradient: linear-gradient(135deg, #2D3250, #7077A1);
+}
+
+.projects-container {
+    min-height: 100vh;
+    background: var(--background);
+    padding: 2rem;
+}
+
+.projects-header {
+    max-width: 1400px;
+    margin: 0 auto 4rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.header-content {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.projects-title {
+    font-size: 3.5rem;
+    background: var(--gradient);
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 1rem;
+}
+
+.projects-subtitle {
+    color: var(--text);
+    font-size: 1.2rem;
+}
+
+.gallery-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+
+
+.filter-wrapper {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    background: var(--background);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(131, 143, 214, 0.1);
+}
+
+.filter-btn.active {
+    background: var(--gradient);
+    color: white;
+}
+
+.gallery-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    opacity: 1;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease forwards;
+    transition: opacity 0.3s ease-in-out;
+}
+.gallery.loading {
+    opacity: 0.5;
+       pointer-events: none;
+}
+
+
+.gallery.masonry-view {
+    display: block;
+    columns: 3;
+    column-gap: 2rem;
+}
+
+
+
+.gallery-item {
+    break-inside: avoid;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+        animation: fadeIn 0.5s ease-in-out forwards;
+}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.item-inner {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+.item-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+    border-right: 20px solid red;
+}
+
+
+/* Hover effects */
+.item-inner:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.item-inner:hover img {
+    transform: scale(1.05);
+}
+.gallery-item img,
+.gallery-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.item-inner:hover img,
+.item-inner:hover video {
+    transform: scale(1.1);
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.play-button i {
+    color: var(--primary);
+    font-size: 1.5rem;
+}
+
+.item-overlay {
+    display: none;
+    position: relative;
+    background: white;
+    padding: 1.5rem;
+    height: inherit; /* Fill the entire height */
+    display: flex;
+    flex-direction: column;
+}
+
+.item-content {
+    color: var(--text);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+
+.item-content h3 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: var(--primary);
+    word-break: break-word;
+    font-weight: 600;
+}
+
+.item-content p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 1rem;
+    color: var(--text);
+    /* Add these properties for text wrapping */
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line; /* Preserve line breaks but wrap text */
+    max-width: 100%; /* Ensure text stays within container */
+}
+.item-content .description {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.02);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text);
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.item-content .description::-webkit-scrollbar {
+    width: 4px;
+}
+
+.item-content .description::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+.item-category {
+    margin-bottom: 1rem;
+}
+
+.item-category span {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--gradient);
+    color: white;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: transform 0.3s ease;
+}
+.item-category span:hover {
+    transform: translateY(-2px);
+}
+.item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.date {
+    font-size: 0.9rem;
+    color: var(--text);
+    opacity: 0.8;
+    font-weight: 500;
+}
+.item-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.item-inner:hover .item-overlay {
+    opacity: 1;
+}
+
+
+.item-tags span {
+    padding: 0.3rem 0.8rem;
+    background: var(--background);
+    border-radius: 15px;
+    font-size: 0.8rem;
+    color: var(--text);
+}
+.project-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.project-modal.active .modal-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.modal-media {
+    background: black;
+}
+
+.modal-media img,
+.modal-media video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.modal-details {
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.modal-nav.prev {
+    left: 1rem;
+}
+
+.modal-nav.next {
+    right: 1rem;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.video-controls {
+    opacity: 1;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+}
+.video-controls .play-pause {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-controls .play-pause:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+
+/* Large Desktop (1200px and above) */
+@media (min-width: 1200px) {
+    .gallery {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .item-inner {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        min-height: 500px;
+        max-height: 600px;
+    }
+
+    .item-inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        grid-column: 1;
+    }
+
+    .custom-video-player {
+        height: 100%;
+    }
+
+    .video-container {
+        height: 100%;
+        padding-top: 0 !important;
+    }
+
+    .video-container video {
+        object-fit: cover;
+    }
+
+    .item-overlay {
+        padding: 2.5rem;
+    }
+
+    .item-content h3 {
+        font-size: 1.6rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .item-content .description {
+        max-height: 250px;
+        padding: 1.2rem;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .item-category span {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.95rem;
+    }
+
+    .gallery.masonry-view {
+        columns: 3;
+        column-gap: 2.5rem;
+    }
+}
+
+/* Desktop (1024px to 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+    .gallery {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .item-inner {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        min-height: 450px;
+        max-height: 550px;
+    }
+
+    .item-inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        grid-column: 1;
+    }
+
+    .item-overlay {
+        padding: 2rem;
+    }
+
+    .item-content h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .item-content .description {
+        max-height: 220px;
+        padding: 1rem;
+        margin-bottom: 1.2rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .item-category span {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .gallery.masonry-view {
+        columns: 3;
+        column-gap: 2rem;
+    }
+}
+
+/* Tablet Landscape (768px to 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .gallery {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .item-inner {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        min-height: 400px;
+    }
+
+    .item-inner img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        grid-column: 1;
+    }
+
+    .item-overlay {
+        padding: 1.8rem;
+    }
+
+    .item-content h3 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .item-content .description {
+        max-height: 200px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .item-category span {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .gallery.masonry-view {
+        columns: 2;
+        column-gap: 1.5rem;
+    }
+
+    .projects-title {
+        font-size: 3rem;
+    }
+}
+
+/* Tablet Portrait (481px to 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+    .projects-container {
+        padding: 1.5rem;
+    }
+
+    .item-inner {
+        display: block;
+    }
+
+    .item-inner img {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+    }
+
+    .video-container {
+        padding-top: 56.25%;
+    }
+
+    .item-overlay {
+        padding: 1.5rem;
+    }
+
+    .item-content h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .item-content .description {
+        max-height: 180px;
+        padding: 0.8rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .item-category span {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+
+    .gallery.masonry-view {
+        columns: 1;
+    }
+
+    .projects-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
+    .projects-container {
+        padding: 1rem;
+    }
+
+    .item-inner {
+        display: block;
+    }
+
+    .item-inner img {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+    }
+
+    .video-container {
+        padding-top: 56.25%;
+    }
+
+    .item-overlay {
+        padding: 1.2rem;
+    }
+
+    .item-content h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .item-content .description {
+        max-height: 150px;
+        padding: 0.8rem;
+        margin-bottom: 0.8rem;
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+
+    .item-category span {
+        padding: 0.3rem 0.7rem;
+        font-size: 0.75rem;
+    }
+
+    .item-meta {
+        padding-top: 0.8rem;
+    }
+
+    .date {
+        font-size: 0.8rem;
+    }
+
+    .gallery {
+        gap: 1rem;
+    }
+
+    .projects-title {
+        font-size: 2rem;
+    }
+
+    .video-controls {
+        padding: 0.6rem;
+    }
+
+    .video-controls .play-pause {
+        width: 28px;
+        height: 28px;
+    }
+
+    .time {
+        min-width: 60px;
+        font-size: 11px;
+    }
+}
+
+/* Special handling for very small devices */
+@media (max-width: 320px) {
+    .projects-container {
+        padding: 0.8rem;
+    }
+
+    .item-overlay {
+        padding: 1rem;
+    }
+
+    .item-content h3 {
+        font-size: 1rem;
+    }
+
+    .item-content .description {
+        max-height: 120px;
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+
+    .item-category span {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .video-controls,
+    .item-category span {
+        display: none;
+    }
+
+    .item-content .description {
+        max-height: none;
+        overflow: visible;
+    }
+}

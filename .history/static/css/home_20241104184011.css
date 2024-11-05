@@ -1,0 +1,227 @@
+/* home.css */
+:root {
+    --primary: #2D3250;
+    --accent: #7077A1;
+    --text: #424769;
+    --background: #F6F6F6;
+    --gradient: linear-gradient(135deg, #2D3250, #7077A1);
+}
+
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: var(--background);
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.particle-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 1rem;
+}
+
+.profile-container {
+    margin-top: -5rem;
+}
+
+.profile-frame {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.frame-border {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    animation: rotate 10s linear infinite;
+}
+
+.text-content {
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    padding: 0 1rem;
+}
+
+.hero-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.title-line {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.hero-roles {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
+}
+
+.role-badge {
+    padding: 0.6rem 1.2rem;
+    background: var(--gradient);
+    color: white;
+    border-radius: 20px;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.hero-description {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 0.8s forwards;
+    padding: 0 0.5rem;
+}
+
+.cta-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeIn 0.8s ease 1s forwards;
+}
+
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: clamp(0.8rem, 2vw, 1rem) clamp(1.5rem, 4vw, 2.5rem);
+    background: var(--gradient);
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 1.5rem;
+        gap: 1.5rem;
+        margin: 0.5rem;
+    }
+
+    .profile-container {
+        margin-top: -3rem;
+    }
+
+    .profile-frame {
+        width: 150px;
+        height: 150px;
+    }
+
+    .frame-border {
+        top: -8px;
+        left: -8px;
+        right: -8px;
+        bottom: -8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .profile-container {
+        margin-top: -2rem;
+    }
+
+    .profile-frame {
+        width: 120px;
+        height: 120px;
+    }
+
+    .hero-roles {
+        gap: 0.5rem;
+    }
+
+    .role-badge {
+        padding: 0.5rem 1rem;
+    }
+
+    .social-links {
+        gap: 1rem;
+    }
+}
+
+/* Keep existing animations */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}

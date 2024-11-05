@@ -1,0 +1,401 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+     <link rel="stylesheet" href="{% static 'css/global.css' %}">
+      <link rel="stylesheet" href="{% static 'css/events.css' %}">
+</head>
+
+
+<body>
+
+<header class="events-hero">
+    <div class="container animate-fade-up">
+        <h1>Upcoming Events</h1>
+    </div>
+</header>
+
+<nav class="events-nav">
+    <ul>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="#calendar" class="active">Calendar</a></li>
+        <li><a href="#upcoming">Upcoming Events</a></li>
+    </ul>
+</nav>
+
+<section id="calendar" class="calendar-section">
+    <div class="calendar-container animate-fade-up">
+        <div class="calendar-header">
+            <button id="prevMonth">&lt; Previous</button>
+            <h2>{{ month_name }} {{ year }}</h2>
+            <button id="nextMonth">Next &gt;</button>
+        </div>
+        
+        <div class="calendar-grid">
+            <!-- Day headers -->
+            <div class="calendar-day header">Sun</div>
+            <div class="calendar-day header">Mon</div>
+            <div class="calendar-day header">Tue</div>
+            <div class="calendar-day header">Wed</div>
+            <div class="calendar-day header">Thu</div>
+            <div class="calendar-day header">Fri</div>
+            <div class="calendar-day header">Sat</div>
+
+            <!-- Calendar days -->
+            {% for week in calendar_data %}
+                {% for day in week %}
+                    <div class="calendar-day{% if day.events %} has-event{% endif %}{% if day.is_today %} today{% endif %}{% if day.is_past %} past{% endif %}">
+                        {% if day.day != 0 %}
+                            <span class="day-number">{{ day.day }}</span>
+                            {% if day.events %}
+                                <div class="event-dots">
+                                    {% for event in day.events|slice:":3" %}
+                                        <div 
+                                            class="event-dot" 
+                                            onclick="window.location.href='{% url 'event-detail' event.slug %}'"
+                                            title="{{ event.title }}"
+                                            data-event-id="{{ event.id }}"
+                                        ></div>
+                                    {% endfor %}
+                                    {% if day.events|length > 3 %}
+                                        <div 
+                                            class="event-dot more" 
+                                            title="+{{ day.events|length|add:'-3' }} more events"
+                                        ></div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="upcoming" class="upcoming-events">
+    <h2 class="section-title">Upcoming Events</h2>
+    
+    <div class="events-grid">
+     <!-- Event card changes -->
+{% for event in upcoming_events %}
+<div class="event-card animate-fade-up">
+    <div class="event-image">
+        {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}">
+        {% else %}
+            <img src="{% static 'images/default-event.jpg' %}" alt="{{ event.title }}">
+        {% endif %}
+        <div class="event-date-badge">{{ event.date|date:"M d" }}</div>
+        <div class="share-button" onclick="toggleShareMenu(this)">
+            <i class="fas fa-share-alt"></i>
+        </div>
+        <div class="share-menu">
+            <!-- Share menu items -->
+            <a href="#" class="share-menu-item" data-platform="whatsapp" data-title="{{ event.title }}" data-description="{{ event.description }}">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+        </div>
+    </div>
+    <div class="event-details">
+        <h3>{{ event.title }}</h3>
+        <div class="event-meta">
+            <span><i class="fas fa-map-marker-alt"></i> {{ event.venue }}</span>
+            <span><i class="fas fa-clock"></i> {{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</span>
+        </div>
+        <div class="event-description">
+            <p>{{ event.description }}</p>
+        </div>
+        <a href="{% url 'event-detail' event.slug %}" class="btn btn-primary">Book Tickets</a>
+    </div>
+</div>
+{% endfor %}
+    </div>
+</section>
+
+
+
+
+
+    <script>
+
+
+
+// Calendar navigation and event handling
+document.addEventListener('DOMContentLoaded', function() {
+    let currentDate = new Date();
+    const calendarGrid = document.querySelector('.calendar-grid');
+    const monthYearDisplay = document.querySelector('.calendar-header h2');
+    const loadingOverlay = createLoadingOverlay();
+    
+    function createLoadingOverlay() {
+        const overlay = document.createElement('div');
+        overlay.className = 'calendar-loading-overlay';
+        overlay.innerHTML = `
+            <div class="loading-spinner"></div>
+            <p>Loading calendar...</p>
+        `;
+        document.querySelector('.calendar-container').appendChild(overlay);
+        return overlay;
+    }
+
+    // Calendar navigation
+    document.getElementById('prevMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        fetchCalendarData();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        fetchCalendarData();
+    });
+
+    async function fetchCalendarData() {
+        try {
+            loadingOverlay.style.display = 'flex';
+            
+            const response = await fetch(`/api/events/calendar/?year=${currentDate.getFullYear()}&month=${currentDate.getMonth() + 1}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            
+            const data = await response.json();
+            
+            if (data.status === 'success') {
+                updateCalendar(data);
+                
+                // Update URL without page reload
+                const newUrl = new URL(window.location);
+                newUrl.searchParams.set('year', data.year);
+                newUrl.searchParams.set('month', data.month);
+                window.history.pushState({}, '', newUrl);
+            } else {
+                throw new Error(data.message || 'Failed to load calendar data');
+            }
+        } catch (error) {
+            console.error('Error fetching calendar data:', error);
+            showError('Unable to load calendar data. Please try again later.');
+        } finally {
+            loadingOverlay.style.display = 'none';
+        }
+    }
+
+    function updateCalendar(data) {
+        // Update header
+        monthYearDisplay.textContent = `${data.month_name} ${data.year}`;
+        
+        // Clear existing calendar days but keep headers
+        const headers = calendarGrid.querySelectorAll('.calendar-day.header');
+        calendarGrid.innerHTML = '';
+        headers.forEach(header => calendarGrid.appendChild(header));
+
+        data.calendar_data.forEach(week => {
+            week.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = `calendar-day ${day.is_today ? 'today' : ''} ${day.is_past ? 'past' : ''}`;
+                
+                if (day.day !== 0) {
+                    const dayNumber = document.createElement('span');
+                    dayNumber.className = 'day-number';
+                    dayNumber.textContent = day.day;
+                    dayElement.appendChild(dayNumber);
+                    
+                    if (day.events && day.events.length > 0) {
+                        dayElement.classList.add('has-event');
+                        const dotsContainer = document.createElement('div');
+                        dotsContainer.className = 'event-dots';
+                        
+                        day.events.slice(0, 3).forEach(event => {
+                            const dot = document.createElement('div');
+                            dot.className = 'event-dot';
+                            dot.title = `${event.title}\n${event.start_time} - ${event.end_time}`;
+                            dot.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                window.location.href = `/events/${event.slug}/`;
+                            });
+                            dotsContainer.appendChild(dot);
+                        });
+                        
+                        if (day.events.length > 3) {
+                            const moreDot = document.createElement('div');
+                            moreDot.className = 'event-dot more';
+                            moreDot.title = `${day.events.length - 3} more events`;
+                            dotsContainer.appendChild(moreDot);
+                        }
+                        
+                        dayElement.appendChild(dotsContainer);
+                    }
+                }
+                
+                calendarGrid.appendChild(dayElement);
+            });
+        });
+    }
+
+    function showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'calendar-error';
+        errorDiv.textContent = message;
+        
+        calendarGrid.innerHTML = '';
+        calendarGrid.appendChild(errorDiv);
+    }
+
+    // Add this CSS to your stylesheet
+    const style = document.createElement('style');
+    style.textContent = `
+        .calendar-loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .calendar-error {
+            padding: 20px;
+            text-align: center;
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+
+        .calendar-day.today {
+            background-color: #e8f4ff;
+            font-weight: bold;
+        }
+
+        .calendar-day.past {
+            opacity: 0.7;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Initialize calendar
+    fetchCalendarData();
+});
+
+
+
+
+// Share functionality
+function toggleShareMenu(button) {
+    event.stopPropagation();
+    const menu = button.nextElementSibling;
+    const overlay = document.getElementById('shareOverlay');
+    
+    // Close any open share menus
+    document.querySelectorAll('.share-menu.active').forEach(m => {
+        if (m !== menu) m.classList.remove('active');
+    });
+
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
+
+// Add click handlers for share menu items
+document.querySelectorAll('.share-menu-item').forEach(item => {
+    item.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const platform = this.dataset.platform;
+        const title = this.dataset.title;
+        const description = this.dataset.description;
+        
+        switch(platform) {
+            case 'whatsapp':
+                shareToWhatsApp(title, description);
+                break;
+            case 'facebook':
+                shareToFacebook(title, description);
+                break;
+            case 'twitter':
+                shareToTwitter(title, description);
+                break;
+            case 'linkedin':
+                shareToLinkedIn(title, description);
+                break;
+            case 'email':
+                shareViaEmail(title, description);
+                break;
+        }
+        
+        // Close menu after sharing
+        setTimeout(() => {
+            document.querySelectorAll('.share-menu.active').forEach(menu => menu.classList.remove('active'));
+            document.getElementById('shareOverlay').classList.remove('active');
+        }, 100);
+    });
+});
+
+// Sharing functions
+function shareToWhatsApp(title, description) {
+    const text = `${title}\n${description}\n${window.location.href}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
+function shareToFacebook(title, description) {
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank');
+}
+
+function shareToTwitter(title, description) {
+    const text = `${title}\n${description}`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank');
+}
+
+function shareToLinkedIn(title, description) {
+    const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`;
+    window.open(url, '_blank');
+}
+
+function shareViaEmail(title, description) {
+    const subject = encodeURIComponent(title);
+    const body = encodeURIComponent(`${description}\n\nMore info: ${window.location.href}`);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+// Close overlay when clicking outside
+document.getElementById('shareOverlay').addEventListener('click', function() {
+    document.querySelectorAll('.share-menu.active').forEach(menu => menu.classList.remove('active'));
+    this.classList.remove('active');
+});
+    </script>
+</body>
+</html>

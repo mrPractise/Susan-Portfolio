@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Gallery</title>
+    <link rel="stylesheet" href="{% static 'css/projects.css' %}">
+    <link rel="stylesheet" href="{% static 'css/videoplayer.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <main class="projects-container">
+        <header class="projects-header">
+            <div class="header-content">
+                <h1 class="projects-title">Project Gallery</h1>
+                <p class="projects-subtitle">A showcase of creative work</p>
+            </div>
+            
+            <div class="gallery-controls">
+                <div class="view-toggle">
+                    <button class="toggle-btn {% if current_view == 'grid' %}active{% endif %}" 
+                            data-view="grid" 
+                            aria-label="Grid View">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="toggle-btn {% if current_view == 'masonry' %}active{% endif %}" 
+                            data-view="masonry" 
+                            aria-label="Masonry View">
+                        <i class="fas fa-columns"></i>
+                    </button>
+                </div>
+                
+                <div class="filter-wrapper">
+                    <button class="filter-btn {% if current_category == 'all' %}active{% endif %}" 
+                            data-filter="all">
+                        All Projects
+                    </button>
+                    {% for category in categories %}
+                    <button class="filter-btn {% if current_category == category.slug %}active{% endif %}" 
+                            data-filter="{{ category.slug }}">
+                        {{ category.name }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+        </header>
+
+        <div class="gallery-container">
+            <div class="gallery {{ current_view }}-view">
+                {% include 'partials/project_grid.html' with projects=projects %}
+            </div>
+            
+            <div class="loading-spinner" hidden>
+                <div class="spinner"></div>
+                <span>Loading more projects...</span>
+            </div>
+        </div>
+    </main>
+
+    <div class="project-modal" aria-hidden="true" tabindex="-1">
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+        <div class="modal-content">
+            <div class="modal-media"></div>
+            <div class="modal-info">
+                <h2 class="modal-title"></h2>
+                <p class="modal-description"></p>
+                <div class="modal-metadata">
+                    <time class="metadata-date"></time>
+                    <span class="metadata-category"></span>
+                </div>
+            </div>
+        </div>
+        <button class="modal-nav prev" aria-label="Previous project">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="modal-nav next" aria-label="Next project">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    {% csrf_token %}
+    <script>
+        window.INITIAL_DATA = {
+            currentCategory: '{{ current_category|default:"all" }}',
+            currentView: '{{ current_view|default:"grid" }}'
+        };
+    </script>
+    <script src="{% static 'javascript/videoplayer.js' %}"></script>
+    <script src="{% static 'javascript/projects.js' %}"></script>
+</body>
+</html>

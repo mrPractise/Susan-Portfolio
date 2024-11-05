@@ -1,0 +1,108 @@
+<!-- projects.html -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/projects.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<div class="projects-container">
+    <header class="projects-header">
+        <div class="header-content">
+            <h1 class="projects-title">Project Gallery</h1>
+            <p class="projects-subtitle">A showcase of my creative work and artistic journey</p>
+        </div>
+        
+        <div class="gallery-controls">
+            <div class="view-toggle">
+                <button class="toggle-btn active" data-view="grid">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="toggle-btn" data-view="masonry">
+                    <i class="fas fa-columns"></i>
+                </button>
+            </div>
+            
+            <div class="filter-wrapper">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="2d">2D Art</button>
+                <button class="filter-btn" data-filter="3d">3D Art</button>
+                <button class="filter-btn" data-filter="video">Videos</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="gallery-container">
+        <div class="gallery grid-view">
+            <!-- Example items - repeat as needed -->
+            <div class="gallery-item" data-category="2d">
+                <div class="item-inner">
+                    <img src="{% static 'images/project1.jpg' %}" alt="2D Artwork">
+                    <div class="item-overlay">
+                        <div class="item-content">
+                            <h3>Fantasy Character</h3>
+                            <p>Digital Painting, 2024</p>
+                            <div class="item-tags">
+                                <span>2D</span>
+                                <span>Character Design</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-item video-item" data-category="video">
+                <div class="item-inner">
+                    <video poster="{% static 'images/video-thumb.jpg' %}">
+                        <source src="{% static 'videos/animation.mp4' %}" type="video/mp4">
+                    </video>
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="item-overlay">
+                        <div class="item-content">
+                            <h3>Character Animation</h3>
+                            <p>3D Animation, 2024</p>
+                            <div class="item-tags">
+                                <span>Animation</span>
+                                <span>3D</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Add more gallery items here -->
+        </div>
+    </div>
+
+    <!-- Full Screen Modal -->
+    <div class="project-modal">
+        <button class="modal-close">&times;</button>
+        <div class="modal-content">
+            <div class="modal-media"></div>
+            <div class="modal-details">
+                <h2 class="modal-title"></h2>
+                <p class="modal-description"></p>
+                <div class="modal-metadata">
+                    <div class="metadata-item">
+                        <span class="metadata-label">Created:</span>
+                        <span class="metadata-value date"></span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Category:</span>
+                        <span class="metadata-value category"></span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Tools:</span>
+                        <span class="metadata-value tools"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="modal-nav prev">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="modal-nav next">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
+
+<script src="{% static 'javascript/projects.js' %}"></script>
+
