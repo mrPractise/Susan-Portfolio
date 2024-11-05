@@ -38,7 +38,7 @@ from decimal import Decimal
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from .credentials import MpesaCredential
-from .mpesa_utils import format_phone_number,MpesaPaymentHandler, handle_mpesa_callback
+from .utils import format_phone_number,MpesaPaymentHandler, handle_mpesa_callback
 import requests
 
 
@@ -60,81 +60,6 @@ def home(request):
 def portfolio(request):
     form = ContactForm()
     return render(request, 'portfolio.html',{'form': form})
-
-
-
-@csrf_protect
-def send_contact_email(request):
-    if request.method == 'POST':
-        form = ContactForm(request.POST)
-        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-        
-        if form.is_valid():
-            try:
-                # Get cleaned and validated data
-                clean_data = form.cleaned_data
-                
-                # Create HTML email content
-                email_context = {
-                    'name': clean_data['name'],
-                    'email': clean_data['email'],
-                    'service': dict(form.fields['service'].choices)[clean_data['service']],
-                    'message': clean_data['message'],
-                }
-                
-                html_content = render_to_string('contact-email.html', email_context)
-                plain_message = strip_tags(html_content)
-                
-                # Create and send email
-                email_message = EmailMultiAlternatives(
-                    subject=f'New Contact Message from {clean_data["name"]}',
-                    body=plain_message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[settings.CONTACT_EMAIL],
-                    reply_to=[clean_data['email']]
-                )
-                
-                email_message.attach_alternative(html_content, "text/html")
-                email_message.send(fail_silently=False)
-                
-                logger.info(f"Contact form submitted successfully from {clean_data['email']}")
-                
-                if is_ajax:
-                    return JsonResponse({
-                        'success': True,
-                        'message': 'Thank you! Your message has been sent successfully.'
-                    })
-                else:
-                    messages.success(request, 'Thank you! Your message has been sent successfully.')
-                    return render(request, 'index.html', {'form': ContactForm()})
-                    
-            except Exception as e:
-                logger.error(f"Error in contact form submission: {str(e)}")
-                error_message = 'Sorry, there was an error sending your message. Please try again.'
-                
-                if is_ajax:
-                    return JsonResponse({
-                        'success': False,
-                        'message': error_message
-                    }, status=500)
-                else:
-                    messages.error(request, error_message)
-                    return render(request, 'index.html', {'form': form})
-        else:
-            # Form validation failed
-            if is_ajax:
-                return JsonResponse({
-                    'success': False,
-                    'errors': form.errors,
-                    'message': 'Please correct the errors below.'
-                }, status=400)
-            else:
-                messages.error(request, 'Please correct the errors below.')
-                return render(request, 'index.html', {'form': form})
-    
-    # If not POST, redirect to index
-    return HttpResponseRedirect('/')
-
 
 def project_list(request):
     """View for displaying projects with filtering and pagination."""
@@ -561,18 +486,21 @@ def process_payment(request, slug):
             messages.error(request, "No booking information found.")
             return redirect('event-detail', slug=slug)
         
-        # Get and validate phone number
+        # Get phone number from form
         phone = request.POST.get('phone')
         if not phone:
             messages.error(request, "Please provide a phone number.")
             return redirect('payment', slug=slug)
         
+        # Format the phone number using the utility function
         formatted_phone = format_phone_number(phone)
         
         with transaction.atomic():
             # Create booking
             booking = Booking.objects.create(
                 event=event,
+                name="", # You might want to add a name field to the form
+                email="", # You might want to add an email field to the form
                 phone=formatted_phone,
                 status='pending',
                 total_amount=Decimal(booking_info['total_amount'])
@@ -588,17 +516,84 @@ def process_payment(request, slug):
                     unit_price=ticket_type.price
                 )
 
-            # Initialize payment handler
-            payment_handler = MpesaPaymentHandler(request, MpesaCredential())
+            # Initialize M-Pesa payment
+            mpesa = MpesaCredential()
+            access_token = mpesa.get_access_token()
             
+            if not access_token:
+                raise Exception("Could not get M-Pesa access token")
+
+            # Generate password and timestamp
+            password, timestamp = mpesa.generate_password()
+            
+            # Prepare STK Push request
+            stk_push_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+            
+            headers = {
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json',
+            }
+            
+            callback_url = f"{settings.BASE_URL}/mpesa/callback/"
+            
+            stk_payload = {
+                'BusinessShortCode': mpesa.business_shortcode,
+                'Password': password,
+                'Timestamp': timestamp,
+                'TransactionType': 'CustomerBuyGoodsOnline',
+                'Amount': int(booking.total_amount),
+                'PartyA': formatted_phone,
+                'PartyB': mpesa.business_shortcode,
+                'PhoneNumber': formatted_phone,
+                'CallBackURL': callback_url,
+                'AccountReference': f'EVENT{booking.id}',
+                'TransactionDesc': f'Payment for {booking.event.title}'
+            }
+
             # Make STK Push request
-            response = payment_handler.prepare_stk_push(booking, formatted_phone)
+            response = requests.post(
+                stk_push_url,
+                json=stk_payload,
+                headers=headers
+            )
             
-            # Clear booking info from session
-            del request.session['booking_info']
+            if response.status_code == 200:
+                response_data = response.json()
+                
+                # Store checkout details in session
+                request.session['mpesa_checkout'] = {
+                    'booking_id': booking.id,
+                    'checkout_request_id': response_data.get('CheckoutRequestID')
+                }
+                
+                # Clear booking info from session
+                del request.session['booking_info']
+                
+                # Handle AJAX request
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True,
+                        'message': 'Please check your phone for the M-PESA prompt',
+                        'redirect_url': reverse('booking_confirmation', args=[booking.id])
+                    })
+                
+                # Handle regular form submission
+                messages.success(
+                    request, 
+                    "Please check your phone for the M-PESA payment prompt."
+                )
+                return redirect('booking_confirmation', booking_id=booking.id)
             
-            # Handle response
-            return payment_handler.handle_response(response, booking, slug)
+            else:
+                # M-Pesa request failed
+                error_message = "Failed to initiate M-Pesa payment. Please try again."
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False,
+                        'message': error_message
+                    })
+                messages.error(request, error_message)
+                return redirect('payment', slug=slug)
             
     except Exception as e:
         error_message = str(e) if str(e) else "An error occurred. Please try again."
@@ -616,19 +611,70 @@ def process_payment(request, slug):
 def initiate_stk_push(request, booking_id):
     """Initiate M-Pesa STK Push payment"""
     try:
+        # Get booking
         booking = get_object_or_404(Booking, id=booking_id, status='pending')
+        
+        # Get and format phone number
         phone = format_phone_number(request.POST.get('phone', '').strip())
         
-        payment_handler = MpesaPaymentHandler(request, MpesaCredential())
-        response = payment_handler.prepare_stk_push(booking, phone)
+        # Initialize M-Pesa API
+        mpesa = MpesaCredential()
+        access_token = mpesa.get_access_token()
         
-        # Store session data for callback verification
-        request.session[f'mpesa_booking_{booking.id}'] = {
-            'phone': phone,
-            'amount': str(booking.total_amount)
+        if not access_token:
+            return JsonResponse({
+                'success': False,
+                'message': 'Unable to connect to M-Pesa. Please try again.'
+            })
+
+        # Generate password and timestamp
+        password, timestamp = mpesa.generate_password()
+        
+        # Prepare STK Push request
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-Type': 'application/json',
         }
         
-        return payment_handler.handle_response(response, booking)
+        callback_url = f"{settings.BASE_URL}/mpesa/callback/"
+        
+        payload = {
+            'BusinessShortCode': mpesa.business_shortcode,
+            'Password': password,
+            'Timestamp': timestamp,
+            'TransactionType': 'CustomerBuyGoodsOnline',
+            'Amount': int(booking.total_amount),
+            'PartyA': phone,
+            'PartyB': mpesa.business_shortcode,
+            'PhoneNumber': phone,
+            'CallBackURL': callback_url,
+            'AccountReference': f'EVENT{booking.id}',
+            'TransactionDesc': f'Payment for {booking.event.title}'
+        }
+
+        # Make STK Push request
+        response = requests.post(
+            'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+            json=payload,
+            headers=headers
+        )
+
+        if response.status_code == 200:
+            # Store checkout_request_id in session for callback verification
+            request.session[f'mpesa_booking_{booking.id}'] = {
+                'phone': phone,
+                'amount': str(booking.total_amount)
+            }
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Please check your phone for the M-Pesa prompt'
+            })
+            
+        return JsonResponse({
+            'success': False,
+            'message': 'Failed to initiate payment. Please try again.'
+        })
 
     except Exception as e:
         return JsonResponse({
@@ -647,12 +693,20 @@ def callback(request):
         booking_id = result['AccountReference'].replace('EVENT', '')
         booking = get_object_or_404(Booking, id=booking_id)
         
-        response = handle_mpesa_callback(booking, result)
+        if result['ResultCode'] == 0:
+            # Payment successful
+            booking.status = 'confirmed'
+            booking.save()
+            
+            # Clean up session data
+            request.session.pop(f'mpesa_booking_{booking.id}', None)
+            
+        else:
+            # Payment failed
+            booking.status = 'cancelled'
+            booking.save()
         
-        # Clean up session data
-        request.session.pop(f'mpesa_booking_{booking.id}', None)
-        
-        return JsonResponse(response)
+        return JsonResponse({'status': 'success'})
         
     except Exception as e:
         return JsonResponse({
@@ -680,3 +734,75 @@ def booking_confirmation(request, booking_id):
 
 
 
+
+@csrf_protect
+def send_contact_email(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        
+        if form.is_valid():
+            try:
+                # Get cleaned and validated data
+                clean_data = form.cleaned_data
+                
+                # Create HTML email content
+                email_context = {
+                    'name': clean_data['name'],
+                    'email': clean_data['email'],
+                    'service': dict(form.fields['service'].choices)[clean_data['service']],
+                    'message': clean_data['message'],
+                }
+                
+                html_content = render_to_string('contact-email.html', email_context)
+                plain_message = strip_tags(html_content)
+                
+                # Create and send email
+                email_message = EmailMultiAlternatives(
+                    subject=f'New Contact Message from {clean_data["name"]}',
+                    body=plain_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[settings.CONTACT_EMAIL],
+                    reply_to=[clean_data['email']]
+                )
+                
+                email_message.attach_alternative(html_content, "text/html")
+                email_message.send(fail_silently=False)
+                
+                logger.info(f"Contact form submitted successfully from {clean_data['email']}")
+                
+                if is_ajax:
+                    return JsonResponse({
+                        'success': True,
+                        'message': 'Thank you! Your message has been sent successfully.'
+                    })
+                else:
+                    messages.success(request, 'Thank you! Your message has been sent successfully.')
+                    return render(request, 'index.html', {'form': ContactForm()})
+                    
+            except Exception as e:
+                logger.error(f"Error in contact form submission: {str(e)}")
+                error_message = 'Sorry, there was an error sending your message. Please try again.'
+                
+                if is_ajax:
+                    return JsonResponse({
+                        'success': False,
+                        'message': error_message
+                    }, status=500)
+                else:
+                    messages.error(request, error_message)
+                    return render(request, 'index.html', {'form': form})
+        else:
+            # Form validation failed
+            if is_ajax:
+                return JsonResponse({
+                    'success': False,
+                    'errors': form.errors,
+                    'message': 'Please correct the errors below.'
+                }, status=400)
+            else:
+                messages.error(request, 'Please correct the errors below.')
+                return render(request, 'index.html', {'form': form})
+    
+    # If not POST, redirect to index
+    return HttpResponseRedirect('/')
