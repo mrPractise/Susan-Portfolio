@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Gallery - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/event-gallery.css' %}">
+</head>
+<body>
+    <header class="gallery-hero">
+        <div class="hero-content">
+            <h1>Event Gallery</h1>
+            <p>Explore moments from our past events and celebrations</p>
+        </div>
+    </header>
+
+    <section class="gallery-filters">
+        <div class="filter-container">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">2024</button>
+            <button class="filter-btn">2023</button>
+            <button class="filter-btn">Workshops</button>
+            <button class="filter-btn">Conferences</button>
+            <button class="filter-btn">Social Events</button>
+        </div>
+    </section>
+
+    <div class="gallery-grid">
+        <!-- Example gallery items -->
+        <div class="gallery-item">
+            <img src="/api/placeholder/400/600" alt="Event 1">
+            <div class="item-overlay">
+                <h3 class="item-title">Leadership Workshop 2024</h3>
+                <p class="item-date">March 15, 2024</p>
+            </div>
+        </div>
+        <div class="gallery-item video">
+            <img src="/api/placeholder/400/600" alt="Event 2">
+            <div class="item-overlay">
+                <h3 class="item-title">Annual Conference Highlights</h3>
+                <p class="item-date">February 28, 2024</p>
+            </div>
+        </div>
+        <!-- Add more gallery items as needed -->
+    </div>
+
+    <button class="load-more">Load More</button>
+
+    <!-- Lightbox -->
+    <div class="lightbox">
+        <div class="lightbox-close">&times;</div>
+        <div class="lightbox-content">
+            <!-- Content will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter functionality
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    // Add your filter logic here
+                });
+            });
+
+            // Lightbox functionality
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const lightbox = document.querySelector('.lightbox');
+            const lightboxContent = document.querySelector('.lightbox-content');
+            const lightboxClose = document.querySelector('.lightbox-close');
+
+            galleryItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const imgSrc = this.querySelector('img').src;
+                    const isVideo = this.classList.contains('video');
+                    
+                    if (isVideo) {
+                        lightboxContent.innerHTML = `
+                            <video controls>
+                                <source src="${imgSrc.replace('.jpg', '.mp4')}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        `;
+                    } else {
+                        lightboxContent.innerHTML = `<img src="${imgSrc}" alt="Gallery image">`;
+                    }
+                    
+                    lightbox.classList.add('active');
+                });
+            });
+
+            lightboxClose.addEventListener('click', () => {
+                lightbox.classList.remove('active');
+            });
+
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                }
+            });
+
+            // Load more functionality
+            const loadMoreBtn = document.querySelector('.load-more');
+            loadMoreBtn.addEventListener('click', function() {
+                // Add your load more logic here
+            });
+        });
+    </script>
+</body>
+</html>

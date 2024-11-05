@@ -1,0 +1,53 @@
+<div class="confirmation-page">
+    <div class="container">
+        <div class="confirmation-status">
+            {% if booking.status == 'confirmed' %}
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <h1>Payment Successful!</h1>
+                    <p>Your booking has been confirmed.</p>
+                </div>
+            {% elif booking.status == 'pending' %}
+                <div class="pending-message">
+                    <i class="fas fa-clock"></i>
+                    <h1>Payment Pending</h1>
+                    <p>Please complete the M-PESA payment on your phone.</p>
+                </div>
+            {% else %}
+                <div class="failed-message">
+                    <i class="fas fa-times-circle"></i>
+                    <h1>Payment Failed</h1>
+                    <p>The payment was not successful. Please try again.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="booking-details">
+            <h2>Booking Details</h2>
+            <div class="event-info">
+                <h3>{{ event.title }}</h3>
+                <p>{{ event.date|date:"l, F j, Y" }}</p>
+                <p>{{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A" }}</p>
+                <p>{{ event.venue }}</p>
+            </div>
+
+            <div class="ticket-summary">
+                <h3>Tickets</h3>
+                {% for ticket in tickets %}
+                    <div class="ticket-item">
+                        <span>{{ ticket.quantity }}x {{ ticket.ticket_type.name }}</span>
+                        <span>KES {{ ticket.subtotal|floatformat:2 }}</span>
+                    </div>
+                {% endfor %}
+                <div class="total">
+                    <strong>Total Amount:</strong>
+                    <strong>KES {{ booking.total_amount|floatformat:2 }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="{% url 'events' %}" class="btn btn-primary">Back to Events</a>
+        </div>
+    </div>
+</div>
