@@ -1,0 +1,142 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ event.title }} - Susan Abong'o</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/global.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/event-detail.css' %}" />
+  </head>
+
+  <body>
+    <div class="event-detail-page">
+      <div
+        class="event-hero"
+        style="background-image: url('{{ event.image.url }}')"
+      >
+        <div class="overlay"></div>
+        <div class="container">
+          <h1>{{ event.title }}</h1>
+        </div>
+      </div>
+
+      <div class="event-content">
+        <div class="event-info">
+          <div class="event-meta">
+            <div class="meta-item">
+              <i class="fas fa-calendar"></i>
+              <span>{{ event.date|date:"l, F j, Y" }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="fas fa-clock"></i>
+              <span
+                >{{ event.start_time|time:"g:i A" }} - {{event.end_time|time:"g:i A" }}</span>
+            </div>
+            <div class="meta-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>{{ event.venue }}</span>
+            </div>
+          </div>
+
+          <div class="event-description">
+            {{ event.description|linebreaks }}
+          </div>
+
+          {% if not event.is_sold_out and not is_past %}
+          <div class="ticket-section">
+            <h2>Available Tickets</h2>
+
+            <form method="post" action="{% url 'events:process_booking' event.slug %}">
+              {% csrf_token %} {% if messages %}
+              <div class="messages">
+                {% for message in messages %}
+                {% include 'alert-messages.html' %}
+                {% endfor %}
+              </div>
+              {% endif %}
+
+              <div class="ticket-types">
+                {% for ticket_type in ticket_types %}
+                <div
+                  class="ticket-type-card {% if ticket_type.is_sold_out %}sold-out{% endif %}"
+                >
+                  <div class="ticket-info">
+                    <h3>{{ ticket_type.name }}</h3>
+                    <p class="ticket-description">
+                      {{ ticket_type.description }}
+                    </p>
+                    <p class="ticket-price">
+                      KES {{ ticket_type.price|floatformat:2 }}
+                    </p>
+                 {% if ticket_type.available_tickets <= 10 and ticket_type.available_tickets > 0 %}
+    <p class="tickets-left">
+        {{ ticket_type.available_tickets }} ticket{{ ticket_type.available_tickets|pluralize }} remaining
+    </p>
+{% endif %}
+                  </div>
+                  {% if not ticket_type.is_sold_out %}
+                  <div class="ticket-counter">
+                    <input
+                      type="number"
+                      name="ticket_{{ ticket_type.id }}"
+                      value="0"
+                      min="0"
+                      max="{{ ticket_type.available_tickets }}"
+                      class="ticket-quantity"
+                    />
+                  </div>
+                  {% endif %}
+                </div>
+                {% endfor %}
+              </div>
+
+              <!-- Add this right before the submit button -->
+                <div class="order-summary" id="orderSummary" style="display: none;">
+                    <h3>Ticket Summary</h3>
+                    <div id="ticketDetails"></div>
+                    <div class="total-line">
+                        <span>Total:</span>
+                        <span>KES <span id="totalAmount">0.00</span></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                    <i class="fas fa-lock"></i>Continue to Payment
+                </button>
+            </form>
+          </div>
+          {% elif is_past %}
+          <div class="event-message">
+            <i class="fas fa-calendar-times"></i>
+            <h2>Event Has Passed</h2>
+            <p>This event has already taken place.</p>
+          </div>
+          {% else %}
+          <div class="event-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <h2>Sold Out</h2>
+            <p>Sorry, this event is sold out.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+
+<script>
+    // Initialize constants for JavaScript
+    const EVENT_DATA = {
+        csrfToken: '{{ csrf_token }}',
+        processBookingUrl: '{% url "events:events:process_booking" event.slug %}'
+    };
+</script>
+<script src="{% static 'javascript/event-detail.js' %}"></script>
+
+  </body>
+</html>

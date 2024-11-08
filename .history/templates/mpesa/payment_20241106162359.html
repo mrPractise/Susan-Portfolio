@@ -1,0 +1,160 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - {{ event.title }}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/payment.css' %}">
+</head>
+
+<body>
+    <div class="payment-page">
+        <div class="container">
+            <h1>Complete Your Payment</h1>
+            
+            {% if messages %}
+ {% include "alert-messages.html" %}
+            {% endif %}
+
+            <div class="order-summary">
+                <h2>Order Summary</h2>
+                <div class="event-details">
+                    <h3>{{ event.title }}</h3>
+                    <p>{{ event.date|date:"l, F j, Y" }}</p>
+                </div>
+                
+                <div class="ticket-list">
+                    {% for ticket in selected_tickets %}
+                    <div class="ticket-item">
+                        <span>{{ ticket.quantity }}x {{ ticket.ticket_type.name }}</span>
+                        <span>KES {{ ticket.subtotal|floatformat:2 }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="total">
+                    <strong>Total Amount:</strong>
+                    <strong>KES {{ total_amount|floatformat:2 }}</strong>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <h2>M-PESA Payment</h2>
+                <form id="mpesaPaymentForm" method="post" action="{% url 'events:process_payment' event.slug %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="phone">M-PESA Phone Number</label>
+                        <div class="phone-input-wrapper">
+                            <input type="tel" 
+                                id="phone" 
+                                name="phone" 
+                                class="phone-input"
+                                pattern="[0-9]{9,10}"
+                                placeholder="712345678" 
+                                maxlength="10"
+                                required>
+                            <div class="phone-prefix">
+                                <div class="flag-icon">
+                                    <img src="{% static 'images/flag.svg' %}" alt="Kenya Flag">
+                                </div>
+                            </div>
+                        </div>
+                        <small class="form-text text-muted">Enter without country code (e.g., 712345678)</small>
+                    </div>
+                    
+                    <div class="mpesa-instructions">
+                        <p>1. Enter your M-PESA registered phone number</p>
+                        <p>2. You will receive a prompt on your phone</p>
+                        <p>3. Enter your M-PESA PIN to complete the payment</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="payButton">
+                        Pay KES {{ total_amount|floatformat:2 }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById("mpesaPaymentForm");
+            const phoneInput = document.getElementById("phone");
+            const payButton = document.getElementById("payButton");
+            const originalButtonText = payButton.innerHTML;
+
+            // Phone number formatting
+            phoneInput.addEventListener('input', function(e) {
+                // Remove any non-digits
+                let value = this.value.replace(/\D/g, '');
+                
+                // Remove leading zero if present
+                if (value.startsWith('0')) {
+                    value = value.substring(1);
+                }
+                
+                // Limit to 9 digits (without prefix)
+                value = value.substring(0, 9);
+                
+                // Update input value
+                this.value = value;
+            });
+
+            form.addEventListener("submit", async function(e) {
+                e.preventDefault();
+                
+                // Disable the button
+                payButton.disabled = true;
+                payButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+                try {
+                    // Format phone number before sending
+                    let phoneNumber = phoneInput.value;
+                    if (!phoneNumber.startsWith('254')) {
+                        phoneNumber = '254' + phoneNumber;
+                    }
+
+                    const formData = new FormData(form);
+                    formData.set('phone', phoneNumber);
+
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Show success message
+                        alert(result.message || 'Please check your phone for the M-PESA prompt');
+                        
+                        if (result.redirect_url) {
+                            window.location.href = result.redirect_url;
+                        }
+                    } else {
+                        // Show error message
+                        alert(result.message || 'Payment initiation failed. Please try again.');
+                        // Reset button
+                        payButton.disabled = false;
+                        payButton.innerHTML = originalButtonText;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                    // Reset button
+                    payButton.disabled = false;
+                    payButton.innerHTML = originalButtonText;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

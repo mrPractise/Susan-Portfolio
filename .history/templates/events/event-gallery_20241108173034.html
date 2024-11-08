@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Gallery - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/global-css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/events-css/event-gallery.css' %}">
+</head>
+<body>
+    {% include 'general/back.html' %}
+<header class="gallery-hero">
+    <div class="animated-background">
+        <!-- Floating Icons -->
+        <div class="floating-icon camera"><i class="fas fa-camera"></i></div>
+        <div class="floating-icon image"><i class="fas fa-image"></i></div>
+        <div class="floating-icon video"><i class="fas fa-video"></i></div>
+        <div class="floating-icon photo"><i class="fas fa-camera-retro"></i></div>
+        <div class="floating-icon play"><i class="fas fa-play-circle"></i></div>
+        <div class="floating-icon gallery"><i class="fas fa-images"></i></div>
+        
+        <!-- Particles -->
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+    </div>
+    <div class="hero-content">
+        <h1>Event Gallery</h1>
+        <p>Explore moments from our past events and celebrations</p>
+    </div>
+</header>
+
+    <section class="gallery-filters">
+        <div class="filter-container">
+            {% for category in categories %}
+                <button class="filter-btn {% if category.slug == current_category %}active{% endif %}" 
+                        data-category="{{ category.slug }}">
+                    {{ category.name }}
+                </button>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="gallery-grid">
+                {% for item in media_items %}
+    <div class="gallery-item {% if item.media_type == 'video' %}video{% endif %}" 
+         data-id="{{ item.id }}"
+         data-file-url="{{ item.file.url }}">
+        {% if item.media_type == 'video' %}
+            <div class="video-preview">
+                <video preload="metadata" muted>
+                    <source src="{{ item.file.url }}" type="video/mp4">
+                </video>
+                <div class="video-play-overlay">
+                    <i class="fas fa-play"></i>
+                </div>
+            </div>
+        {% else %}
+            <img src="{% if item.thumbnail %}{{ item.thumbnail.url }}{% else %}{{ item.file.url }}{% endif %}" 
+                 alt="{{ item.title }}">
+        {% endif %}
+        <div class="item-overlay">
+            <h3 class="item-title">{{ item.title }}</h3>
+            <p class="item-date">{{ item.event_date|date:"F d, Y" }}</p>
+            {% if item.description %}
+                <p class="item-description">{{ item.description|truncatewords:20 }}</p>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+    </div>
+
+    {% if has_next %}
+        <button class="load-more">Load More</button>
+    {% endif %}
+
+    <!-- Lightbox -->
+    <div class="lightbox">
+        <div class="lightbox-close">&times;</div>
+        <div class="lightbox-content">
+            <!-- Content will be inserted here via JavaScript -->
+        </div>
+        <div class="lightbox-navigation">
+            <button class="nav-btn prev-btn" aria-label="Previous">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="nav-btn next-btn" aria-label="Next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="lightbox-info">
+            <!-- Info will be inserted here via JavaScript -->
+        </div>
+    </div>
+
+    <!-- Add this before closing body tag -->
+    <script>
+        // Pass Django template variables to JavaScript
+        window.galleryConfig = {
+            loadMoreUrl: "{% url 'events:event-gallery' %}",
+            currentCategory: "{{ current_category }}",
+            csrfToken: "{{ csrf_token }}"
+        };
+    </script>
+    <script src="{% static 'javascript/events-js/event-gallery.js' %}"></script>
+
+</body>
+</html>

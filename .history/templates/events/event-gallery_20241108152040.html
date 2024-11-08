@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Gallery - Susan Abong'o</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/event-gallery.css' %}">
+</head>
+<body>
+    <header class="gallery-hero">
+        <div class="hero-content">
+            <h1>Event Gallery</h1>
+            <p>Explore moments from our past events and celebrations</p>
+        </div>
+    </header>
+
+    <section class="gallery-filters">
+        <div class="filter-container">
+            {% for category in categories %}
+                <button class="filter-btn {% if category.slug == current_category %}active{% endif %}" 
+                        data-category="{{ category.slug }}">
+                    {{ category.name }}
+                </button>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="gallery-grid">
+        {% for item in media_items %}
+            <div class="gallery-item {% if item.media_type == 'video' %}video{% endif %}" data-id="{{ item.id }}">
+                <img src="{% if item.thumbnail %}{{ item.thumbnail.url }}{% else %}{{ item.file.url }}{% endif %}" 
+                     alt="{{ item.title }}">
+                <div class="item-overlay">
+                    <h3 class="item-title">{{ item.title }}</h3>
+                    <p class="item-date">{{ item.event_date|date:"F d, Y" }}</p>
+                    {% if item.description %}
+                        <p class="item-description">{{ item.description|truncatewords:20 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="no-items-message">
+                <p>No media items found in this category.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if has_next %}
+        <button class="load-more">Load More</button>
+    {% endif %}
+
+    <!-- Lightbox -->
+    <div class="lightbox">
+        <div class="lightbox-close">&times;</div>
+        <div class="lightbox-content">
+            <!-- Content will be inserted here via JavaScript -->
+        </div>
+        <div class="lightbox-navigation">
+            <button class="nav-btn prev-btn" aria-label="Previous">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="nav-btn next-btn" aria-label="Next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="lightbox-info">
+            <!-- Info will be inserted here via JavaScript -->
+        </div>
+    </div>
+
+    <!-- Add this before closing body tag -->
+    <script>
+        // Pass Django template variables to JavaScript
+        window.galleryConfig = {
+            loadMoreUrl: "{% url 'event-gallery' %}",
+            currentCategory: "{{ current_category }}",
+            csrfToken: "{{ csrf_token }}"
+        };
+    </script>
+    <script src="{% static 'javascript/event-gallery.js' %}"></script>
+</body>
+</html>

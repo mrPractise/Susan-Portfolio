@@ -1,0 +1,48 @@
+<!-- home.html -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<div class="particle-container" id="particles-js"></div>
+
+<section id="home" class="hero-section">
+    <div class="hero-content">
+        <div class="profile-container">
+            <div class="profile-frame">
+                <img src="{% static 'images/susan.jpg' %}" alt="Susan Abong'o" class="profile-image">
+                <div class="frame-border"></div>
+            </div>
+        </div>
+        
+        <div class="text-content">
+            <h1 class="hero-title">
+                <span class="title-line">Susan</span>
+                <span class="title-line">Abong'o</span>
+            </h1>
+            
+            <div class="hero-roles">
+                <div class="role-badge">Digital Artist</div>
+                <div class="role-badge">Model</div>
+                <div class="role-badge">Event Host</div>
+            </div>
+
+            <p class="hero-description">Welcome to my creative universe where digital art meets fashion and entertainment. As a multifaceted artist based in Nairobi, I blend traditional artistic techniques with cutting-edge digital tools to create unique visual experiences.</p>
+            
+            <div class="cta-container">
+                <a href="{% url 'portfolio:portfolio' %}" class="cta-button">
+                    <span class="cta-text">View My Work</span>
+                    <span class="cta-icon">→</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-behance"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+<script src="{% static 'javascript/home.js' %}"></script>
+
+

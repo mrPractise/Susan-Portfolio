@@ -1,0 +1,50 @@
+{% load static %}
+<head>
+   <link rel="stylesheet" href="{% static 'css/global-css/alert-messages.css' %}"> <!-- Alert messages styles -->
+</head>
+<div class="alert-container">
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" aria-label="Close">&times;</button>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    // Function to initialize alerts
+    function initializeAlerts() {
+        const alerts = document.querySelectorAll('.alert');
+        
+        // Add click handlers to close buttons
+        document.querySelectorAll('.alert .btn-close').forEach(button => {
+            button.addEventListener('click', function() {
+                const alert = this.parentElement;
+                closeAlert(alert);
+            });
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(() => {
+            alerts.forEach(alert => closeAlert(alert));
+        }, 5000);
+    }
+
+    // Function to close an alert with animation
+    function closeAlert(alert) {
+        alert.classList.remove('show');
+        alert.classList.add('hiding');
+        
+        // Remove the alert after animation
+        setTimeout(() => {
+            alert.remove();
+        }, 300); // Match this with CSS transition duration
+    }
+
+    // Initialize when DOM is loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeAlerts);
+    } else {
+        initializeAlerts();
+    }
+</script>
